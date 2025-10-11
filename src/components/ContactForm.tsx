@@ -9,9 +9,11 @@ const ContactForm = () => {
     email: "",
     message: "",
   });
+  const [buttonText, setButtonText] = useState("CONTACT US");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setButtonText("TALK TO YOU SOON!");
     toast.success("Thank you for reaching out! We'll be in touch soon.");
     setFormData({ firstName: "", lastName: "", email: "", message: "" });
   };
@@ -19,11 +21,11 @@ const ContactForm = () => {
   return (
     <section id="contact" className="py-20 bg-primary">
       <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto bg-card p-8 lg:p-12 rounded-sm shadow-lg">
+        <div className="max-w-2xl mx-auto bg-card p-8 lg:p-12 shadow-lg">
           <h2 className="text-3xl lg:text-4xl font-bold text-center mb-2 text-secondary tracking-wide">
             CONTACT US
           </h2>
-          <p className="text-center text-sm text-muted-foreground mb-8">
+          <p className="text-center text-xs text-muted-foreground mb-6">
             Get in touch with us to set up coverage
           </p>
 
@@ -87,9 +89,13 @@ const ContactForm = () => {
             <div className="text-center">
               <Button
                 type="submit"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium tracking-wide px-8 py-6 rounded-full text-sm"
+                className={`font-medium tracking-wide px-8 py-6 rounded-full text-sm transition-all duration-300 ${
+                  buttonText === "CONTACT US" 
+                    ? "bg-white hover:bg-gray-50 text-orange-600 border-2 border-orange-600" 
+                    : "bg-slate-600 hover:bg-slate-700 text-white border-2 border-slate-600"
+                }`}
               >
-                TALK TO YOU SOON!
+                {buttonText}
               </Button>
             </div>
           </form>

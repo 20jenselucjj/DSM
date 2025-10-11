@@ -35,55 +35,61 @@ const Header = () => {
         <nav className="hidden lg:flex items-center gap-8">
           <button
             onClick={() => scrollToSection("home")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider"
+            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             HOME
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
           </button>
           <button
             onClick={() => scrollToSection("about")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider"
+            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             ABOUT
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
           </button>
           <button
             onClick={() => scrollToSection("services")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider"
+            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             SERVICES
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 tracking-wider">
+              <button className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 tracking-wider relative group">
                 PORTALS
                 <ChevronDown className="h-3 w-3" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-card border-border z-50">
-              <DropdownMenuItem className="p-0">
-                <Button variant="default" className="w-full justify-center text-xs" size="sm">
+            <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg rounded-none p-0 w-[180px] z-50" align="start">
+              <DropdownMenuItem className="p-0 border-b border-gray-200">
+                <div className="w-full text-black text-sm font-medium py-2.5 px-6 hover:bg-gray-50 transition-colors text-left">
                   CLIENT PORTAL
-                </Button>
+                </div>
               </DropdownMenuItem>
-              <DropdownMenuItem className="p-2">
-                <span className="text-xs text-foreground w-full text-center">
+              <DropdownMenuItem className="p-0">
+                <div className="w-full bg-amber-700 hover:bg-amber-800 text-white text-sm font-medium py-2.5 px-6 transition-colors text-left">
                   AT PORTAL
-                </span>
+                </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <button
             onClick={() => scrollToSection("contact")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider"
+            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             CONTACT US
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
           </button>
           <button
             onClick={() => scrollToSection("faq")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider"
+            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             FAQ
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
           </button>
 
           <div className="relative">

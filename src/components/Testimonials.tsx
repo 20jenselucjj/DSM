@@ -36,7 +36,7 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-20 bg-background border-t border-border">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 text-secondary tracking-wide">
           WHAT OUR CLIENTS SAY
