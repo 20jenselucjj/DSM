@@ -38,38 +38,36 @@ const Testimonials = () => {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16 text-secondary tracking-wide">
+        <h2 className="text-4xl font-semibold text-center mb-12 text-secondary tracking-[0.25em]">
           WHAT OUR CLIENTS SAY
         </h2>
 
         <div className="max-w-4xl mx-auto relative">
           <div className="flex items-center justify-between gap-8">
-            <Button
+            <button
+              aria-label="Previous testimonial"
               onClick={goToPrevious}
-              variant="ghost"
-              size="icon"
-              className="shrink-0 h-12 w-12 text-secondary hover:text-primary"
+              className="p-2 text-muted-foreground transition-transform hover:-translate-x-1"
             >
-              <ChevronLeft className="h-8 w-8" />
-            </Button>
+              <ChevronLeft className="h-10 w-10" />
+            </button>
 
             <div className="text-center px-4">
-              <p className="text-base lg:text-lg text-foreground leading-relaxed mb-6 italic">
+              <p className="text-base md:text-lg text-foreground/80 leading-loose mb-8 italic tracking-wide">
                 "{testimonials[currentIndex].quote}"
               </p>
-              <p className="text-sm font-medium text-muted-foreground italic">
+              <p className="text-xs font-medium text-muted-foreground italic">
                 -{testimonials[currentIndex].author}
               </p>
             </div>
 
-            <Button
+            <button
+              aria-label="Next testimonial"
               onClick={goToNext}
-              variant="ghost"
-              size="icon"
-              className="shrink-0 h-12 w-12 text-secondary hover:text-primary"
+              className="p-2 text-muted-foreground transition-transform hover:translate-x-1"
             >
-              <ChevronRight className="h-8 w-8" />
-            </Button>
+              <ChevronRight className="h-10 w-10" />
+            </button>
           </div>
         </div>
       </div>

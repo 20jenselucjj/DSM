@@ -89,11 +89,10 @@ const ContactForm = () => {
             <div className="text-center">
               <Button
                 type="submit"
-                className={`font-medium tracking-wide px-8 py-6 rounded-full text-sm transition-all duration-300 ${
-                  buttonText === "CONTACT US" 
-                    ? "bg-white hover:bg-gray-50 text-orange-600 border-2 border-orange-600" 
-                    : "bg-slate-600 hover:bg-slate-700 text-white border-2 border-slate-600"
-                }`}
+                className={
+                  // Match About page button styling regardless of text state
+                  "rounded-full border border-primary px-6 py-2 text-primary hover:bg-primary hover:text-primary-foreground transition-colors tracking-widest text-xs bg-transparent"
+                }
               >
                 {buttonText}
               </Button>

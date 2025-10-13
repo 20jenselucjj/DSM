@@ -53,6 +53,7 @@ const WhySection = () => {
             </p>
           </div>
         </div>
+
       </div>
     </section>
   );
