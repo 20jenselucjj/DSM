@@ -43,13 +43,13 @@ const Testimonials = () => {
         </h2>
 
         <div className="max-w-4xl mx-auto relative">
-          <div className="flex items-center justify-between gap-8">
+          <div className="flex items-center justify-between gap-6 md:gap-8">
             <button
               aria-label="Previous testimonial"
               onClick={goToPrevious}
-              className="p-2 text-muted-foreground transition-transform hover:-translate-x-1"
+              className="p-3 md:p-2 min-h-12 min-w-12 rounded-full flex items-center justify-center text-muted-foreground transition-transform hover:-translate-x-1 focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <ChevronLeft className="h-10 w-10" />
+              <ChevronLeft className="h-6 w-6 md:h-10 md:w-10" />
             </button>
 
             <div className="text-center px-4">
@@ -64,9 +64,9 @@ const Testimonials = () => {
             <button
               aria-label="Next testimonial"
               onClick={goToNext}
-              className="p-2 text-muted-foreground transition-transform hover:translate-x-1"
+              className="p-3 md:p-2 min-h-12 min-w-12 rounded-full flex items-center justify-center text-muted-foreground transition-transform hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <ChevronRight className="h-10 w-10" />
+              <ChevronRight className="h-6 w-6 md:h-10 md:w-10" />
             </button>
           </div>
         </div>

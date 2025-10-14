@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
@@ -35,7 +37,7 @@ const Header = () => {
           </div>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
           <button
             onClick={() => scrollToSection("home")}
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
@@ -102,6 +104,112 @@ const Header = () => {
             />
           </div>
         </nav>
+
+        {/* Mobile menu */}
+        <div className="lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button
+                aria-label="Open menu"
+                className="inline-flex items-center justify-center h-10 w-10 rounded-md border border-muted-foreground/30 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-4 [&>button]:hidden">
+              <nav aria-label="Mobile">
+                <ul className="space-y-1">
+                  <li>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => scrollToSection("home")}
+                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                      >
+                        HOME
+                      </button>
+                    </SheetClose>
+                  </li>
+                  <li>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => navigate("/about")}
+                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                      >
+                        ABOUT
+                      </button>
+                    </SheetClose>
+                  </li>
+                  <li>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => scrollToSection("services")}
+                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                      >
+                        SERVICES
+                      </button>
+                    </SheetClose>
+                  </li>
+
+                  <li className="pt-2 mt-2 border-t border-border">
+                    <Accordion type="single" collapsible>
+                      <AccordionItem value="portals">
+                        <AccordionTrigger className="px-4 py-3 text-sm font-medium tracking-wider text-foreground hover:text-primary hover:decoration-primary focus:text-primary focus:decoration-primary decoration-2 underline-offset-4">
+                          <span className="block w-full text-center">PORTALS</span>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-1">
+                            <SheetClose asChild>
+                              <button className="w-full text-sm px-4 py-3 rounded hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring text-foreground">
+                                CLIENT PORTAL
+                              </button>
+                            </SheetClose>
+                            <SheetClose asChild>
+                              <button className="w-full text-sm px-4 py-3 rounded hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring text-foreground">
+                                AT PORTAL
+                              </button>
+                            </SheetClose>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </li>
+
+                  <li>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => scrollToSection("contact")}
+                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                      >
+                        CONTACT US
+                      </button>
+                    </SheetClose>
+                  </li>
+                  <li>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => scrollToSection("faq")}
+                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                      >
+                        FAQ
+                      </button>
+                    </SheetClose>
+                  </li>
+                </ul>
+
+                <div className="mt-4 flex items-center gap-2">
+                  <Search className="h-4 w-4 text-muted-foreground transform scaleX(-1)" />
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 px-3 py-2 text-sm border border-muted-foreground/30 rounded bg-background focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

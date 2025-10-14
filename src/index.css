@@ -114,9 +114,29 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: 'Montserrat', sans-serif;
+    line-height: 1.5;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
+  }
+  
+  /* Ensure readable default text size */
+  html {
+    font-size: 16px;
+  }
+
+  /* Flexible media defaults */
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  iframe {
+    max-width: 100%;
   }
 }

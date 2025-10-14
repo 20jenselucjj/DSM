@@ -10,7 +10,7 @@ const WhySection = () => {
           WHY DESERT SPORTS MED
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-12 max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
               <img src={checkIcon} alt="Professional certification" className="h-24 w-auto" />
