@@ -13,7 +13,7 @@ const About = () => {
         {/* Hero */}
         <section className="bg-background">
           <div className="container mx-auto px-6 pt-8 pb-4">
-            <h1 className="text-center text-3xl sm:text-5xl font-semibold tracking-[0.25em] text-secondary">ABOUT US</h1>
+            <h1 className="text-center text-3xl sm:text-5xl font-semibold tracking-[0.25em] text-primary">ABOUT US</h1>
           </div>
           <img
             src={heroImage}
@@ -50,7 +50,7 @@ const About = () => {
               <div className="flex-1 text-left max-w-xl ml-auto">
                 <h3 className="text-xl tracking-[0.3em] font-semibold mb-2">TYLER GILL | LAT, ATC</h3>
                 <div className="flex items-center justify-start mb-6">
-                  <div className="w-16 h-px bg-amber-800 mr-3"></div>
+                  <div className="w-16 h-px bg-accent mr-3"></div>
                   <p className="text-[11px] uppercase tracking-[0.25em] opacity-80">CREATOR & OWNER OF DSM</p>
                 </div>
                 <p className="text-sm leading-loose opacity-95 tracking-wide">
@@ -72,7 +72,7 @@ const About = () => {
                 <h3 className="text-lg md:text-xl tracking-[0.25em] font-semibold mb-2 whitespace-nowrap">NICK JENSEN | MAT, LAT, ATC</h3>
                 <div className="flex items-center justify-end mb-6">
                   <p className="text-[11px] uppercase tracking-[0.25em] opacity-80 text-right">CO-OWNER</p>
-                  <div className="w-16 h-px bg-amber-800 ml-3"></div>
+                  <div className="w-16 h-px bg-accent ml-3"></div>
                 </div>
                 <p className="text-sm opacity-95 text-right tracking-wide leading-loose">
                   "Having a certified athletic trainer from Desert Sports Med on our sidelines has been invaluable. When

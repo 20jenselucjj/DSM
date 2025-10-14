@@ -68,11 +68,14 @@ const Header = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white border border-gray-190 shadow-md rounded-none z-50" align="start">
-              <DropdownMenuItem className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground border-b border-gray-190 data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
+            <DropdownMenuContent className="bg-background border border-border shadow-md rounded-none z-50" align="start">
+              <DropdownMenuItem className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground border-b border-border data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
                 CLIENT PORTAL
               </DropdownMenuItem>
-              <DropdownMenuItem className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
+              <DropdownMenuItem
+                onClick={() => navigate("/at-portal")}
+                className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground"
+              >
                 AT PORTAL
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -164,7 +167,10 @@ const Header = () => {
                               </button>
                             </SheetClose>
                             <SheetClose asChild>
-                              <button className="w-full text-sm px-4 py-3 rounded hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring text-foreground">
+                              <button
+                                onClick={() => navigate("/at-portal")}
+                                className="w-full text-sm px-4 py-3 rounded hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                              >
                                 AT PORTAL
                               </button>
                             </SheetClose>
