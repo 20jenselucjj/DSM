@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import ATPortalGate from "@/components/ATPortalGate";
-import { CalendarDays, ClipboardList, FileWarning, Clock, IdCard, BookOpen, ShieldCheck, Phone } from "lucide-react";
+import { CalendarDays, ClipboardList, Clock, Phone } from "lucide-react";
 
 const linkItems = [
   {
@@ -22,40 +22,16 @@ const linkItems = [
     to: "/coverage-report",
   },
   {
-    title: "Incident Log",
-    description: "Record injuries and on-site interventions.",
-    icon: FileWarning,
-    to: "/incident-log",
-  },
-  {
     title: "Timesheet Submission",
     description: "Log hours for completed assignments.",
     icon: Clock,
     to: "/timesheet",
   },
   {
-    title: "Credential Upload",
-    description: "Manage certifications and compliance documents.",
-    icon: IdCard,
-    to: "/credential-upload",
-  },
-  {
-    title: "Resource Library",
-    description: "Access forms, templates, and best practices.",
-    icon: BookOpen,
-    to: "/resource-library",
-  },
-  {
-    title: "Policies & Procedures",
-    description: "Review coverage protocols and safety policies.",
-    icon: ShieldCheck,
-    to: "/policies",
-  },
-  {
     title: "Contact Coordinator",
     description: "Reach DSM coordinator for support and scheduling.",
     icon: Phone,
-    scrollTo: "contact",
+    to: "/contact-coordinator",
   },
 ];
 
@@ -105,7 +81,7 @@ const ATPortal = () => {
         <section className="bg-background">
           <div className="container mx-auto px-6 py-10">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {linkItems.map(({ title, description, icon: Icon, to, scrollTo }, idx) => {
+              {linkItems.map(({ title, description, icon: Icon, to }, idx) => {
                 // Handle click action for the entire card
                 const handleCardClick = () => {
                   if (to) {

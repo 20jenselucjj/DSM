@@ -29,7 +29,16 @@ const Header = () => {
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+          role="link"
+          aria-label="Go to home page"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") navigate("/");
+          }}
+        >
           <img src={logo} alt="Desert Sports Med" className="h-12" />
           <div className="flex flex-col leading-none">
             <span className="text-primary font-semibold text-2xl tracking-[0.35em]">DESERT</span>
