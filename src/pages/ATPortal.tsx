@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { account } from "@/lib/appwrite";
 import ATPortalGate from "@/components/ATPortalGate";
 import { CalendarDays, ClipboardList, Clock, Phone } from "lucide-react";
 
@@ -38,6 +40,26 @@ const linkItems = [
 const ATPortal = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Require authenticated trainer account to access portal
+  useEffect(() => {
+    let ignore = false;
+    account
+      .get()
+      .then((user) => {
+        if (ignore) return;
+        if (!user.emailVerification) {
+          navigate("/verify-email", { replace: true });
+        }
+      })
+      .catch(() => {
+        if (ignore) return;
+        navigate("/trainer/login", { replace: true });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">

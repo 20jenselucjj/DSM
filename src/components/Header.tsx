@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Search, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,16 +6,52 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { account } from "@/lib/appwrite";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    account
+      .get()
+      .then((u) => {
+        if (!ignore) setUser(u);
+      })
+      .catch(() => {
+        if (!ignore) setUser(null);
+      });
+    return () => {
+      ignore = true;
+    };
+    // Re-check on route changes so header stays in sync with auth state
+  }, [location.pathname]);
+
+  const initials = (nameOrEmail: string | undefined) => {
+    if (!nameOrEmail) return "";
+    const parts = String(nameOrEmail).split(" ");
+    if (parts.length > 1) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return String(nameOrEmail)[0]?.toUpperCase() || "";
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await account.deleteSession("current");
+    } catch (_) {}
+    setUser(null);
+    navigate("/trainer/login");
+  };
 
   const scrollToSection = (id: string) => {
     if (location.pathname !== "/") {
@@ -115,6 +151,38 @@ const Header = () => {
               className="pl-3 pr-3 py-1 text-xs border border-muted-foreground/30 rounded bg-background focus:outline-none focus:ring-1 focus:ring-ring w-32"
             />
           </div>
+
+          {/* Profile menu (visible when signed in) */}
+          {user && (
+            <div className="flex items-center gap-3">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button aria-label="Open account menu" className="inline-flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="text-xs font-medium">
+                        {initials(user.name || user.email)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs font-medium text-muted-foreground">{user.name || user.email}</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-background rounded-none z-50 p-1 min-w-[240px]">
+                  <DropdownMenuLabel className="text-[11px] tracking-wider uppercase text-muted-foreground">Account</DropdownMenuLabel>
+                  <div className="px-2 py-1.5">
+                    <div className="text-xs font-semibold text-foreground">{user.name || user.email}</div>
+                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="px-2 py-2 text-[12px] tracking-wide text-destructive"
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </nav>
 
         {/* Mobile menu */}
@@ -183,6 +251,24 @@ const Header = () => {
                                 AT PORTAL
                               </button>
                             </SheetClose>
+                            {user && (
+                              <div className="mt-2 border-t border-border pt-2">
+                                <div className="px-4 py-2 text-xs text-muted-foreground">
+                                  Signed in as
+                                  <div className="text-foreground font-medium">{user.name || user.email}</div>
+                                  <div>{user.email}</div>
+                                </div>
+                                <SheetClose asChild>
+                                  <Button
+                                    onClick={handleSignOut}
+                                    variant="outline"
+                                    className="w-full"
+                                  >
+                                    Sign Out
+                                  </Button>
+                                </SheetClose>
+                              </div>
+                            )}
                           </div>
                         </AccordionContent>
                       </AccordionItem>

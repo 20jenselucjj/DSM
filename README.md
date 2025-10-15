@@ -69,3 +69,34 @@ npm run build
 ```
 
 The built files will be in the `dist` directory, ready for deployment to any static hosting service.
+
+## Trainer Auth (Appwrite)
+
+Set the following environment variables in a `.env` file (Vite):
+
+```
+VITE_APPWRITE_ENDPOINT=https://<REGION>.cloud.appwrite.io/v1
+VITE_APPWRITE_PROJECT_ID=your-project-id
+```
+
+Pages included:
+- `/trainer/login` – Secure login for Athletic Trainers
+- `/trainer/register` – Account creation with email verification and strong password requirements
+- `/trainer/forgot` – Initiate password recovery; sends a temporary reset link
+- `/verify-email` – Handles email verification callback
+- `/reset-password` – Handles password reset callback and enforces password strength
+
+Security features:
+- Lockout after multiple failed login attempts (client-side UI lock for 15 minutes)
+- Session timeout notifications with auto-logout on inactivity
+- Email verification enforced post-registration
+
+To enable a simple gate prompt for the AT Portal, set:
+
+```
+VITE_AT_PORTAL_GATE_ENABLED=true
+VITE_AT_PORTAL_GATE_CODE=demo
+```
+
+### Appwrite MCP
+If you use Appwrite MCP in your IDE, you can manage users and verify flows directly. See Appwrite MCP docs for setup and examples.
