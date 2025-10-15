@@ -64,6 +64,9 @@ const TrainerLogin = () => {
       }
       localStorage.removeItem(ATTEMPTS_KEY);
       localStorage.removeItem(LOCKOUT_KEY);
+      try {
+        window.dispatchEvent(new Event("appwrite-session-changed"));
+      } catch {}
       toast.success("Login successful");
       navigate("/at-portal");
     } catch (err: any) {

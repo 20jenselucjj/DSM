@@ -29,6 +29,10 @@ export const useSessionTimeout = () => {
         try {
           await account.deleteSession("current");
         } catch {}
+        // Notify app to refresh auth state everywhere
+        try {
+          window.dispatchEvent(new Event("appwrite-session-changed"));
+        } catch {}
         toast.error("You have been logged out due to inactivity.");
         warnedRef.current = false;
         lastActivityRef.current = Date.now();

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { account } from "@/lib/appwrite";
+import { getCurrentUserCached } from "@/lib/appwrite";
 import ATPortalGate from "@/components/ATPortalGate";
 import { CalendarDays, ClipboardList, Clock, Phone } from "lucide-react";
 
@@ -44,11 +44,10 @@ const ATPortal = () => {
   // Require authenticated trainer account to access portal
   useEffect(() => {
     let ignore = false;
-    account
-      .get()
+    getCurrentUserCached(true)
       .then((user) => {
         if (ignore) return;
-        if (!user.emailVerification) {
+        if (!user?.emailVerification) {
           navigate("/verify-email", { replace: true });
         }
       })

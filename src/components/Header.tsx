@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Search, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { account } from "@/lib/appwrite";
+import { account, getCurrentUserCached, clearUserCache } from "@/lib/appwrite";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
@@ -22,18 +22,55 @@ const Header = () => {
   const location = useLocation();
   const [user, setUser] = useState<any | null>(null);
 
+  // Throttle account.get calls to avoid rate limits
+  const COOLDOWN_MS = 30000;
+  const lastFetchRef = useRef<number>(0);
+  const inFlightRef = useRef<Promise<void> | null>(null);
+
   useEffect(() => {
     let ignore = false;
-    account
-      .get()
-      .then((u) => {
-        if (!ignore) setUser(u);
-      })
-      .catch(() => {
-        if (!ignore) setUser(null);
-      });
+
+    const refreshUser = async (force = false) => {
+      if (!force && Date.now() - lastFetchRef.current < COOLDOWN_MS) return;
+      if (inFlightRef.current) return;
+      const p = (async () => {
+        try {
+          const u = await getCurrentUserCached(force);
+          if (!ignore) setUser(u);
+        } catch (_) {
+          if (!ignore) setUser(null);
+        } finally {
+          lastFetchRef.current = Date.now();
+          inFlightRef.current = null;
+        }
+      })();
+      inFlightRef.current = p;
+      await p;
+    };
+
+    // Initial check and on route changes
+    void refreshUser(true);
+
+    // Refresh when tab/window regains focus or becomes visible
+    const handleFocus = () => void refreshUser(false);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") void refreshUser(false);
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    // Listen for app-wide session changes (login/logout)
+    const handleSessionChanged = () => {
+      clearUserCache();
+      void refreshUser(true);
+    };
+    window.addEventListener("appwrite-session-changed", handleSessionChanged as EventListener);
+
     return () => {
       ignore = true;
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("appwrite-session-changed", handleSessionChanged as EventListener);
     };
     // Re-check on route changes so header stays in sync with auth state
   }, [location.pathname]);
@@ -49,6 +86,9 @@ const Header = () => {
     try {
       await account.deleteSession("current");
     } catch (_) {}
+    try {
+      window.dispatchEvent(new Event("appwrite-session-changed"));
+    } catch {}
     setUser(null);
     navigate("/trainer/login");
   };
