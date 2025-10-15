@@ -28,9 +28,9 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-8 flex items-center justify-between">
         <div
-          className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-1 cursor-pointer ml-6 mt-1"
           onClick={() => navigate("/")}
           role="link"
           aria-label="Go to home page"
@@ -39,10 +39,10 @@ const Header = () => {
             if (e.key === "Enter" || e.key === " ") navigate("/");
           }}
         >
-          <img src={logo} alt="Desert Sports Med" className="h-12" />
+          <img src={logo} alt="Desert Sports Med" className="h-14" />
           <div className="flex flex-col leading-none">
-            <span className="text-primary font-semibold text-2xl tracking-[0.35em]">DESERT</span>
-            <span className="text-[9px] font-semibold text-primary tracking-[0.35em]">SPORTS MED</span>
+            <span className="text-primary font-semibold text-[30px] tracking-[0.35em] ml-[-2px]">DESERT</span>
+            <span className="text-[10px] font-semibold text-primary tracking-[0.4em] mt-1">SPORTS MED</span>
           </div>
         </div>
 
@@ -71,19 +71,19 @@ const Header = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 tracking-wider relative group">
+              <button className="text-xs font-medium text-muted-foreground hover:text-primary data-[state=open]:text-primary transition-colors flex items-center gap-1 tracking-wider relative group">
                 PORTALS
                 <ChevronDown className="h-3 w-3" />
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full data-[state=open]:w-full"></span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-background border border-border shadow-md rounded-none z-50" align="start">
-              <DropdownMenuItem className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground border-b border-border data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
+            <DropdownMenuContent className="bg-background rounded-none z-50 p-0" align="start" alignOffset={3}>
+              <DropdownMenuItem className="px-1 py-1 text-[11px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground border-b border-border data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
                 CLIENT PORTAL
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => navigate("/at-portal")}
-                className="px-2 py-1 text-[12px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground"
+                className="px-1 py-1 text-[11px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground"
               >
                 AT PORTAL
               </DropdownMenuItem>

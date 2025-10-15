@@ -18,15 +18,20 @@ const Hero = () => {
           />
         </div>
 
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full lg:w-[50%] bg-primary/75 p-12 lg:p-16 text-primary-foreground">
-          <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight mb-8 tracking-wide uppercase font-sans">
-            QUALITY MEDICAL COVERAGE AND TRUSTED CARE FOR ATHLETES, TEAMS, AND EVENTS
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full lg:w-[55%] bg-primary/75 py-12 pl-16 lg:py-16 lg:pl-24 text-primary-foreground">
+          <h1 className="text-middle text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-[1.15] lg:leading-[1.15] xl:leading-[1.15] mb-8 tracking-[0.12em] uppercase Montserrat">
+            QUALITY MEDICAL<br />
+            COVERAGE AND<br />
+            TRUSTED CARE<br />
+            FOR ATHLETES,<br />
+            TEAMS, AND<br />
+            EVENTS
           </h1>
           <Button
             onClick={scrollToContact}
             variant="outline"
-            size="lg"
-            className="border-2 border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary tracking-wider rounded-full px-10 py-3 transition-all duration-300"
+            size="default"
+            className="border border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary px-8 py-2 rounded-full tracking-wider transition-all duration-300"
           >
             LEARN MORE HERE
           </Button>
