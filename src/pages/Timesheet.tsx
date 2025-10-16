@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format, differenceInMinutes, parse } from "date-fns";
+import { format, differenceInMinutes, parse, startOfWeek, endOfWeek } from "date-fns";
 import { 
   PortalLayout, 
   PortalCard, 
@@ -21,10 +21,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { 
   Clock, 
   Plus, 
@@ -36,8 +39,6 @@ import {
   Send,
   AlertCircle,
   CheckCircle2,
-  Timer,
-  Zap,
   Copy
 } from "lucide-react";
 
@@ -74,65 +75,11 @@ const timesheetSchema = z.object({
 
 type TimesheetForm = z.infer<typeof timesheetSchema>;
 
-const eventTypes = [
-  "Football Game",
-  "Basketball Game", 
-  "Soccer Match",
-  "Baseball Game",
-  "Track & Field",
-  "Wrestling Match",
-  "Volleyball Game",
-  "Tennis Match",
-  "Swimming Meet",
-  "Cross Country",
-  "Practice Coverage",
-  "Training Session",
-  "Other"
-];
+// Removed predefined event types and locations (using free text inputs)
 
-const commonLocations = [
-  "Main Stadium",
-  "Gymnasium",
-  "Soccer Field",
-  "Baseball Diamond",
-  "Track & Field Complex",
-  "Tennis Courts",
-  "Swimming Pool",
-  "Wrestling Room",
-  "Training Facility",
-  "Away Game"
-];
+// Removed quick time presets
 
-// Quick time presets for common shift durations
-const timePresets = [
-  { label: "2 Hours", duration: 2, startTime: "18:00", endTime: "20:00" },
-  { label: "3 Hours", duration: 3, startTime: "17:00", endTime: "20:00" },
-  { label: "4 Hours", duration: 4, startTime: "16:00", endTime: "20:00" },
-  { label: "6 Hours", duration: 6, startTime: "14:00", endTime: "20:00" },
-  { label: "8 Hours", duration: 8, startTime: "12:00", endTime: "20:00" }
-];
-
-// Common event templates
-const eventTemplates = [
-  {
-    name: "Football Game",
-    eventType: "Football Game",
-    location: "Main Stadium",
-    duties: "Provide medical coverage for football game, monitor players for injuries, manage sideline medical station"
-  },
-  {
-    name: "Basketball Game", 
-    eventType: "Basketball Game",
-    location: "Gymnasium",
-    duties: "Provide medical coverage for basketball game, monitor players and officials, manage courtside medical equipment"
-  },
-  {
-    name: "Practice Coverage",
-    eventType: "Practice Coverage", 
-    location: "Training Facility",
-    duties: "Provide medical coverage during practice session, monitor athlete safety, handle minor injuries"
-  }
-];
+// Removed event templates
 
 const Timesheet = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,20 +133,7 @@ const Timesheet = () => {
     return entries.reduce((total, entry) => total + calculateEntryHours(entry), 0);
   };
 
-  // Apply time preset to an entry
-  const applyTimePreset = (index: number, preset: typeof timePresets[0]) => {
-    form.setValue(`entries.${index}.startTime`, preset.startTime);
-    form.setValue(`entries.${index}.endTime`, preset.endTime);
-    toast.success(`Applied ${preset.label} preset`);
-  };
-
-  // Apply event template to an entry
-  const applyEventTemplate = (index: number, template: typeof eventTemplates[0]) => {
-    form.setValue(`entries.${index}.eventType`, template.eventType);
-    form.setValue(`entries.${index}.location`, template.location);
-    form.setValue(`entries.${index}.duties`, template.duties);
-    toast.success(`Applied ${template.name} template`);
-  };
+  // Removed quick preset and event template helpers
 
   // Copy entry data from one entry to another
   const copyEntry = (fromIndex: number, toIndex: number) => {
@@ -268,10 +202,10 @@ const Timesheet = () => {
       title="TIMESHEET SUBMISSION"
       description="Log your hours for coverage and on-call duties"
     >
-      <div className="container mx-auto px-6 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
         <div className={`grid grid-cols-1 lg:grid-cols-4 gap-8 ${animations.slideInFromBottom}`}>
           {/* Main Form */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-4 max-w-4xl mx-auto w-full">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 {/* Staff Information */}
@@ -280,7 +214,7 @@ const Timesheet = () => {
                   icon={Calendar}
                   className={animations.slideInUp}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <FormField
                       control={form.control}
                       name="staffName"
@@ -323,13 +257,40 @@ const Timesheet = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Pay Period *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="week"
-                              {...field}
-                              className={animations.focusRing}
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal truncate text-xs sm:text-sm",
+                                  !field.value && "text-muted-foreground",
+                                  animations.focusRing
+                                )}
+                              >
+                                <Calendar className="mr-2 h-4 w-4" />
+                                {field.value
+                                  ? format(parse(field.value, "RRRR-'W'II", new Date()), "PPP")
+                                  : <span className="truncate text-xs sm:text-sm">Pick pay period week</span>}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-0 w-[calc(100vw-2rem)] sm:w-auto" align="start">
+                              <DatePicker
+                                mode="range"
+                                selected={(() => {
+                                  if (!field.value) return undefined;
+                                  const base = parse(field.value, "RRRR-'W'II", new Date());
+                                  const from = startOfWeek(base, { weekStartsOn: 1 });
+                                  const to = endOfWeek(base, { weekStartsOn: 1 });
+                                  return { from, to };
+                                })()}
+                                onDayClick={(date) => {
+                                  const weekValue = format(date, "RRRR-'W'II");
+                                  form.setValue("payPeriod", weekValue, { shouldValidate: true });
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -350,9 +311,9 @@ const Timesheet = () => {
                         className={`p-6 border rounded-lg bg-muted/30 ${animations.slideInUp}`}
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-4">
                           <h4 className="font-semibold text-lg">Entry {index + 1}</h4>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 flex-wrap mt-2 sm:mt-0">
                             {index > 0 && (
                               <PortalButton
                                 variant="outline"
@@ -376,41 +337,7 @@ const Timesheet = () => {
                           </div>
                         </div>
 
-                        {/* Quick Actions */}
-                        <div className="mb-4 p-3 bg-primary/5 rounded-lg">
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                              <Timer className="h-4 w-4" />
-                              Quick Time Presets:
-                            </span>
-                            {timePresets.map((preset) => (
-                              <Badge
-                                key={preset.label}
-                                variant="secondary"
-                                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                                onClick={() => applyTimePreset(index, preset)}
-                              >
-                                {preset.label}
-                              </Badge>
-                            ))}
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                              <Zap className="h-4 w-4" />
-                              Event Templates:
-                            </span>
-                            {eventTemplates.map((template) => (
-                              <Badge
-                                key={template.name}
-                                variant="outline"
-                                className="cursor-pointer hover:bg-secondary hover:text-secondary-foreground transition-colors"
-                                onClick={() => applyEventTemplate(index, template)}
-                              >
-                                {template.name}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
+                        {/* Removed Quick Actions (time presets and event templates) */}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           <FormField
@@ -419,13 +346,36 @@ const Timesheet = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Date *</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="date" 
-                                    {...field}
-                                    className={animations.focusRing}
-                                  />
-                                </FormControl>
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button
+                                      variant="outline"
+                                      className={cn(
+                                        "w-full justify-start text-left font-normal truncate text-xs sm:text-sm",
+                                        !field.value && "text-muted-foreground",
+                                        animations.focusRing
+                                      )}
+                                    >
+                                      <Calendar className="mr-2 h-4 w-4" />
+                                      {field.value
+                                        ? format(parse(field.value, "yyyy-MM-dd", new Date()), "PPP")
+                                        : <span className="truncate text-xs sm:text-sm">Pick a date</span>}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="p-0 w-[calc(100vw-2rem)] sm:w-auto" align="start">
+                                    <DatePicker
+                                      mode="single"
+                                      selected={field.value ? parse(field.value, "yyyy-MM-dd", new Date()) : undefined}
+                                      onSelect={(date) => {
+                                        if (date) {
+                                          const formatted = format(date, "yyyy-MM-dd");
+                                          form.setValue(`entries.${index}.date`, formatted, { shouldValidate: true });
+                                        }
+                                      }}
+                                      initialFocus
+                                    />
+                                  </PopoverContent>
+                                </Popover>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -439,7 +389,9 @@ const Timesheet = () => {
                                 <FormLabel>Start Time *</FormLabel>
                                 <FormControl>
                                   <Input 
-                                    type="time" 
+                                    type="time"
+                                    step="900"
+                                    placeholder="HH:MM"
                                     {...field}
                                     className={animations.focusRing}
                                   />
@@ -457,7 +409,9 @@ const Timesheet = () => {
                                 <FormLabel>End Time *</FormLabel>
                                 <FormControl>
                                   <Input 
-                                    type="time" 
+                                    type="time"
+                                    step="900"
+                                    placeholder="HH:MM"
                                     {...field}
                                     className={animations.focusRing}
                                   />
@@ -473,20 +427,14 @@ const Timesheet = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Event Type *</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger className={animations.focusRing}>
-                                      <SelectValue placeholder="Select event type" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {eventTypes.map((type) => (
-                                      <SelectItem key={type} value={type}>
-                                        {type}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                <FormControl>
+                                  <Input 
+                                    type="text"
+                                    placeholder="Enter event type"
+                                    {...field}
+                                    className={animations.focusRing}
+                                  />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -498,20 +446,14 @@ const Timesheet = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Location *</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger className={animations.focusRing}>
-                                      <SelectValue placeholder="Select location" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {commonLocations.map((location) => (
-                                      <SelectItem key={location} value={location}>
-                                        {location}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                <FormControl>
+                                  <Input 
+                                    type="text"
+                                    placeholder="Enter location"
+                                    {...field}
+                                    className={animations.focusRing}
+                                  />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -530,7 +472,7 @@ const Timesheet = () => {
                                       className={animations.focusRing}
                                     />
                                   </FormControl>
-                                  <FormLabel className="!m-0 text-sm">On-call</FormLabel>
+                                  <FormLabel className="!m-0 text-xs sm:text-sm">On-call</FormLabel>
                                 </FormItem>
                               )}
                             />
@@ -601,56 +543,7 @@ const Timesheet = () => {
                         />
 
                         {/* Enhanced Hours calculation for this entry */}
-                        <div className="mt-4 p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Calculator className="h-5 w-5 text-primary" />
-                              <span className="font-medium text-foreground">Entry Hours Breakdown</span>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-2xl font-bold text-primary">
-                                {calculateEntryHours(form.watch(`entries.${index}`)).toFixed(2)}
-                              </div>
-                              <div className="text-xs text-muted-foreground">Total Hours</div>
-                            </div>
-                          </div>
-                          
-                          {/* Detailed breakdown */}
-                          {(() => {
-                            const entry = form.watch(`entries.${index}`);
-                            if (!entry.startTime || !entry.endTime) return null;
-                            
-                            try {
-                              const start = parse(entry.startTime, "HH:mm", new Date());
-                              const end = parse(entry.endTime, "HH:mm", new Date());
-                              const totalMinutes = differenceInMinutes(end, start);
-                              const workMinutes = totalMinutes - (entry.breakTime || 0);
-                              
-                              return (
-                                <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                                  <div className="text-center p-2 bg-background/50 rounded">
-                                    <div className="font-medium">{(totalMinutes / 60).toFixed(1)}h</div>
-                                    <div className="text-muted-foreground">Total Time</div>
-                                  </div>
-                                  <div className="text-center p-2 bg-background/50 rounded">
-                                    <div className="font-medium">{entry.breakTime || 0}m</div>
-                                    <div className="text-muted-foreground">Break Time</div>
-                                  </div>
-                                  <div className="text-center p-2 bg-background/50 rounded">
-                                    <div className="font-medium">{entry.travelTime || 0}m</div>
-                                    <div className="text-muted-foreground">Travel Time</div>
-                                  </div>
-                                  <div className="text-center p-2 bg-primary/10 rounded">
-                                    <div className="font-medium text-primary">{(workMinutes / 60).toFixed(1)}h</div>
-                                    <div className="text-muted-foreground">Work Time</div>
-                                  </div>
-                                </div>
-                              );
-                            } catch {
-                              return null;
-                            }
-                          })()}
-                        </div>
+                        {/* Removed per-entry hours breakdown */}
                       </div>
                     ))}
 
@@ -658,7 +551,7 @@ const Timesheet = () => {
                       type="button"
                       variant="outline"
                       onClick={addEntry}
-                      className="w-full"
+                      className="w-full sm:w-auto text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add Another Entry
@@ -672,8 +565,8 @@ const Timesheet = () => {
                   icon={Clock}
                   className={animations.slideInUp}
                 >
-                  <div className="p-6 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10 rounded-lg border border-primary/20">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="p-4 sm:p-6 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10 rounded-lg border border-primary/20">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                       <div className="flex items-center gap-3">
                         <div className="p-3 bg-primary/20 rounded-full">
                           <Calculator className="h-6 w-6 text-primary" />
@@ -683,8 +576,8 @@ const Timesheet = () => {
                           <p className="text-sm text-muted-foreground">All entries combined</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-4xl font-bold text-primary">
+                      <div className="text-left sm:text-right">
+                        <div className="text-3xl sm:text-4xl font-bold text-primary">
                           {calculateTotalHours().toFixed(2)}
                         </div>
                         <div className="text-sm text-muted-foreground">Hours</div>
@@ -757,7 +650,7 @@ const Timesheet = () => {
                     variant="outline"
                     onClick={saveDraft}
                     disabled={isDraft || isSubmitting}
-                    className="order-2 sm:order-1"
+                    className="order-2 sm:order-1 text-white"
                   >
                     {isDraft ? (
                       <LoadingSpinner size="sm" className="mr-2" />
@@ -784,100 +677,8 @@ const Timesheet = () => {
             </Form>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="space-y-6 sticky top-6">
-              {/* Hours Summary */}
-              <PortalCard 
-                title="Hours Summary"
-                icon={Calculator}
-                className={animations.slideInUp}
-              >
-                <div className="space-y-4">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-primary">
-                      {totalHours.toFixed(2)}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Total Hours</div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Entries:</span>
-                      <span>{fields.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Regular Hours:</span>
-                      <span>{Math.min(totalHours, 40).toFixed(2)}</span>
-                    </div>
-                    {totalHours > 40 && (
-                      <div className="flex justify-between text-amber-600">
-                        <span>Overtime:</span>
-                        <span>{(totalHours - 40).toFixed(2)}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </PortalCard>
-
-              {/* Quick Tips */}
-              <PortalCard 
-                title="Quick Tips"
-                icon={AlertCircle}
-                className={animations.slideInUp}
-              >
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Include travel time for away games</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Deduct break time from total hours</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Mark on-call duties appropriately</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Save drafts frequently</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Submit by end of pay period</span>
-                  </div>
-                </div>
-              </PortalCard>
-
-              {/* Required Fields */}
-              <PortalCard 
-                title="Required Fields"
-                className={animations.slideInUp}
-              >
-                <div className="space-y-2 text-sm">
-                  <Badge variant="secondary" className="w-full justify-start">
-                    <span className="text-destructive mr-1">*</span>
-                    Staff Information
-                  </Badge>
-                  <Badge variant="secondary" className="w-full justify-start">
-                    <span className="text-destructive mr-1">*</span>
-                    Date & Times
-                  </Badge>
-                  <Badge variant="secondary" className="w-full justify-start">
-                    <span className="text-destructive mr-1">*</span>
-                    Event Type & Location
-                  </Badge>
-                  <Badge variant="secondary" className="w-full justify-start">
-                    <span className="text-destructive mr-1">*</span>
-                    Duties Performed
-                  </Badge>
-                </div>
-              </PortalCard>
-            </div>
-          </div>
+          {/* Sidebar (hidden until content is added) */}
+          <div className="hidden"></div>
         </div>
       </div>
     </PortalLayout>

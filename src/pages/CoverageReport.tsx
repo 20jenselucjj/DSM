@@ -570,28 +570,34 @@ const CoverageReport = () => {
                 </div>
               </PortalCard>
 
-              {/* Form Actions */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+              {/* Form Actions - standardized to Timesheet layout */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
                 <PortalButton
                   type="button"
                   variant="outline"
                   onClick={saveDraft}
-                  disabled={isDraft}
-                  icon={Save}
-                  className="flex-1"
+                  disabled={isDraft || isSubmitting}
+                  className="order-2 sm:order-1 text-white"
                 >
-                  {isDraft ? <LoadingSpinner size="sm" /> : "Save Draft"}
+                  {isDraft ? (
+                    <LoadingSpinner size="sm" className="mr-2" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
+                  Save Draft
                 </PortalButton>
-                
+
                 <PortalButton
                   type="submit"
-                  variant="primary"
-                  disabled={isSubmitting}
-                  icon={Send}
-                  showArrow
-                  className="flex-1"
+                  disabled={isSubmitting || isDraft}
+                  className="order-1 sm:order-2"
                 >
-                  {isSubmitting ? <LoadingSpinner size="sm" /> : "Submit Report"}
+                  {isSubmitting ? (
+                    <LoadingSpinner size="sm" className="mr-2" />
+                  ) : (
+                    <Send className="h-4 w-4 mr-2" />
+                  )}
+                  Submit Report
                 </PortalButton>
               </div>
             </form>
