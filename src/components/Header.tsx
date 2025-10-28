@@ -10,17 +10,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { account, getCurrentUserCached, clearUserCache } from "@/lib/appwrite";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(
+    sessionStorage.getItem("header-search-query") || "",
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any | null>(null);
+
+  // Dispatch custom event when search query changes and persist to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("header-search-query", searchQuery);
+    const event = new CustomEvent("search-query-changed", {
+      detail: { query: searchQuery },
+    });
+    window.dispatchEvent(event);
+  }, [searchQuery]);
 
   // Throttle account.get calls to avoid rate limits
   const COOLDOWN_MS = 30000;
@@ -64,13 +85,19 @@ const Header = () => {
       clearUserCache();
       void refreshUser(true);
     };
-    window.addEventListener("appwrite-session-changed", handleSessionChanged as EventListener);
+    window.addEventListener(
+      "appwrite-session-changed",
+      handleSessionChanged as EventListener,
+    );
 
     return () => {
       ignore = true;
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("appwrite-session-changed", handleSessionChanged as EventListener);
+      window.removeEventListener(
+        "appwrite-session-changed",
+        handleSessionChanged as EventListener,
+      );
     };
     // Re-check on route changes so header stays in sync with auth state
   }, [location.pathname]);
@@ -85,10 +112,14 @@ const Header = () => {
   const handleSignOut = async () => {
     try {
       await account.deleteSession("current");
-    } catch (_) {}
+    } catch (_) {
+      // Ignore errors when deleting session
+    }
     try {
       window.dispatchEvent(new Event("appwrite-session-changed"));
-    } catch {}
+    } catch {
+      // Ignore errors when dispatching event
+    }
     setUser(null);
     navigate("/trainer/login");
   };
@@ -106,7 +137,7 @@ const Header = () => {
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-8 flex items-center justify-between">
         <div
-            className="flex items-center gap-1 cursor-pointer ml-6 mt-1"
+          className="flex items-center gap-1 cursor-pointer ml-6 mt-1"
           onClick={() => navigate("/")}
           role="link"
           aria-label="Go to home page"
@@ -117,8 +148,12 @@ const Header = () => {
         >
           <img src={logo} alt="Desert Sports Med" className="h-14" />
           <div className="flex flex-col leading-none">
-            <span className="text-primary font-semibold text-[30px] tracking-[0.35em] ml-[-2px]">DESERT</span>
-            <span className="text-[10px] font-semibold text-primary tracking-[0.4em] mt-1">SPORTS MED</span>
+            <span className="text-primary font-semibold text-[30px] tracking-[0.35em] ml-[-2px]">
+              DESERT
+            </span>
+            <span className="text-[10px] font-semibold text-primary tracking-[0.4em] mt-1">
+              SPORTS MED
+            </span>
           </div>
         </div>
 
@@ -153,7 +188,11 @@ const Header = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full data-[state=open]:w-full"></span>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-background rounded-none z-50 p-0" align="start" alignOffset={3}>
+            <DropdownMenuContent
+              className="bg-background rounded-none z-50 p-0"
+              align="start"
+              alignOffset={3}
+            >
               <DropdownMenuItem className="px-1 py-1 text-[11px] leading-tight font-medium tracking-[0.25em] uppercase text-foreground border-b border-border data-[highlighted]:bg-primary data-[highlighted]:text-primary-foreground">
                 CLIENT PORTAL
               </DropdownMenuItem>
@@ -197,20 +236,34 @@ const Header = () => {
             <div className="flex items-center gap-3">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button aria-label="Open account menu" className="inline-flex items-center gap-2">
+                  <button
+                    aria-label="Open account menu"
+                    className="inline-flex items-center gap-2"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="text-xs font-medium">
                         {initials(user.name || user.email)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-xs font-medium text-muted-foreground">{user.name || user.email}</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      {user.name || user.email}
+                    </span>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-background rounded-none z-50 p-1 min-w-[240px]">
-                  <DropdownMenuLabel className="text-[11px] tracking-wider uppercase text-muted-foreground">Account</DropdownMenuLabel>
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-background rounded-none z-50 p-1 min-w-[240px]"
+                >
+                  <DropdownMenuLabel className="text-[11px] tracking-wider uppercase text-muted-foreground">
+                    Account
+                  </DropdownMenuLabel>
                   <div className="px-2 py-1.5">
-                    <div className="text-xs font-semibold text-foreground">{user.name || user.email}</div>
-                    <div className="text-xs text-muted-foreground">{user.email}</div>
+                    <div className="text-xs font-semibold text-foreground">
+                      {user.name || user.email}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {user.email}
+                    </div>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -274,7 +327,9 @@ const Header = () => {
                     <Accordion type="single" collapsible>
                       <AccordionItem value="portals">
                         <AccordionTrigger className="px-4 py-3 text-sm font-medium tracking-wider text-foreground hover:text-primary hover:decoration-primary focus:text-primary focus:decoration-primary decoration-2 underline-offset-4">
-                          <span className="block w-full text-center">PORTALS</span>
+                          <span className="block w-full text-center">
+                            PORTALS
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent>
                           <div className="space-y-1">
@@ -295,7 +350,9 @@ const Header = () => {
                               <div className="mt-2 border-t border-border pt-2">
                                 <div className="px-4 py-2 text-xs text-muted-foreground">
                                   Signed in as
-                                  <div className="text-foreground font-medium">{user.name || user.email}</div>
+                                  <div className="text-foreground font-medium">
+                                    {user.name || user.email}
+                                  </div>
                                   <div>{user.email}</div>
                                 </div>
                                 <SheetClose asChild>
