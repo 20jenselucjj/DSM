@@ -1,6 +1,6 @@
 import { memo } from "react";
 import checkIcon from "@/assets/Certified.png";
-import handshakeIcon from "@/assets/Handshake.png";
+import handshakeIcon from "@/assets/handshake.png";
 import heartIcon from "@/assets/Heartbeat.png";
 
 const WhySection = () => {
