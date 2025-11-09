@@ -1,8 +1,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/sc_dsm.jpg";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
+import { memo } from "react";
 
 const About = () => {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ const About = () => {
             src={heroImage}
             alt="Desert landscape"
             className="h-[260px] w-full object-cover sm:h-[340px]"
+            loading="lazy"
+            decoding="async"
+            style={{ contentVisibility: 'auto' }}
           />
         </section>
 
@@ -130,4 +134,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default memo(About);

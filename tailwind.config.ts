@@ -14,7 +14,12 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Montserrat', 'sans-serif'],
+        sans: ['Nunito Sans', 'sans-serif'],
+      },
+      letterSpacing: {
+        'tab': '0.2em',
+        'title': '0.2em',
+        'paragraph': '0.2em',
       },
       colors: {
         border: "hsl(var(--border))",

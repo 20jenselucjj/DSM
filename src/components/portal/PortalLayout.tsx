@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { animations } from "@/lib/animations";
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/IMG_1846 copy.jpg";
 
 interface PortalLayoutProps {
   children: ReactNode;

@@ -1,6 +1,7 @@
-import checkIcon from "@/assets/check.png";
-import handshakeIcon from "@/assets/handshake.png";
-import heartIcon from "@/assets/heart.png";
+import { memo } from "react";
+import checkIcon from "@/assets/Certified.png";
+import handshakeIcon from "@/assets/Handshake.png";
+import heartIcon from "@/assets/Heartbeat.png";
 
 const WhySection = () => {
   return (
@@ -13,7 +14,7 @@ const WhySection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-12 max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
-              <img src={checkIcon} alt="Professional certification" className="h-24 w-auto" />
+              <img src={checkIcon} alt="Professional certification" className="h-24 w-auto" loading="lazy" decoding="async" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide">
               PROFESSIONAL AND CERTIFIED EXPERTISE
@@ -27,7 +28,7 @@ const WhySection = () => {
 
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
-              <img src={handshakeIcon} alt="Comprehensive coverage" className="h-24 w-auto" />
+              <img src={handshakeIcon} alt="Comprehensive coverage" className="h-24 w-auto" loading="lazy" decoding="async" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide">
               COMPREHENSIVE COVERAGE YOU CAN TRUST
@@ -41,7 +42,7 @@ const WhySection = () => {
 
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
-              <img src={heartIcon} alt="Athlete health and safety" className="h-24 w-auto" />
+              <img src={heartIcon} alt="Athlete health and safety" className="h-24 w-auto" loading="lazy" decoding="async" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide">
               DEDICATED TO ATHLETE HEALTH AND SAFETY
@@ -59,4 +60,4 @@ const WhySection = () => {
   );
 };
 
-export default WhySection;
+export default memo(WhySection);

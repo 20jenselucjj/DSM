@@ -32,7 +32,9 @@ const EditablePageWrapper = ({
   const [showEditButton, setShowEditButton] = useState(false);
 
   useEffect(() => {
-    // Load saved content from localStorage (full page builder)
+    // Load saved content from localStorage (full page builder) - only if edit mode is enabled
+    if (!enableEdit) return;
+    
     const storageKey = `page-content-${pageId}`;
     const saved = localStorage.getItem(storageKey);
 
@@ -46,10 +48,12 @@ const EditablePageWrapper = ({
         console.error("Error loading saved content:", error);
       }
     }
-  }, [pageId]);
+  }, [pageId, enableEdit]);
 
   // Separate effect for in-place changes - runs after DOM is ready
   useEffect(() => {
+    if (!enableEdit) return;
+    
     const inPlaceKey = `in-place-editor-changes-${pageId}`;
     const inPlaceSaved = localStorage.getItem(inPlaceKey);
     if (inPlaceSaved) {
@@ -61,7 +65,7 @@ const EditablePageWrapper = ({
         console.error("Error loading in-place changes:", error);
       }
     }
-  }, [pageId, hasCustomContent]);
+  }, [pageId, hasCustomContent, enableEdit]);
 
   // Listen for search query changes and check initial value
   useEffect(() => {

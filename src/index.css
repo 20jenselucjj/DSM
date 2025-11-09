@@ -8,45 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Light Gray #F1F1F2 */
-    --background: 240 2% 95%;
-    /* Charcoal #322E2D */
-    --foreground: 15 6% 19%;
+    /* Background Color #f2f0f2 */
+    --background: 300 11% 95%;
+    /* Text Color/Paragraph #2e231d */
+    --foreground: 20 21% 15%;
 
-    --card: 240 2% 95%;
-    /* Charcoal #322E2D */
-    --card-foreground: 15 6% 19%;
+    --card: 300 11% 95%;
+    /* Text Color/Paragraph #2e231d */
+    --card-foreground: 20 21% 15%;
 
-    --popover: 240 2% 95%;
-    /* Charcoal #322E2D */
-    --popover-foreground: 15 6% 19%;
+    --popover: 300 11% 95%;
+    /* Text Color/Paragraph #2e231d */
+    --popover-foreground: 20 21% 15%;
 
-    /* Reddish Brown/Terracotta #B5654A */
-    --primary: 16 42% 50%;
+    /* Secondary Background Color #a35f44 */
+    --primary: 16 42% 45%;
     --primary-foreground: 0 0% 100%;
 
-    /* Slate Blue #4D5363 */
-    --secondary: 220 13% 35%;
+    /* Main Title Text Color #414759 */
+    --secondary: 225 16% 31%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Light Gray #F1F1F2 with slight tint */
-    --muted: 240 2% 93%;
-    /* Sage Green #95988A */
-    --muted-foreground: 80 5% 57%;
+    /* Background Color #f2f0f2 with slight tint */
+    --muted: 300 11% 93%;
+    /* Main Title Text Color #414759 */
+    --muted-foreground: 225 16% 31%;
 
-    /* Terracotta #AF694F */
-    --accent: 16 38% 49%;
+    /* Sub Title Text Color/Lines #8c3820 */
+    --accent: 16 56% 34%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Sage Green #95988A with lighter tint */
-    --border: 80 5% 75%;
-    /* Light Gray #F1F1F2 with slight tint */
-    --input: 240 2% 92%;
-    /* Terracotta #AF694F */
-    --ring: 16 38% 49%;
+    /* Main Title Text Color #414759 with lighter tint */
+    --border: 225 16% 75%;
+    /* Background Color #f2f0f2 with slight tint */
+    --input: 300 11% 92%;
+    /* Secondary Background Color #a35f44 */
+    --ring: 16 42% 45%;
 
     --radius: 0.375rem;
 
@@ -114,12 +114,21 @@ All colors MUST be HSL.
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     line-height: 1.5;
+    letter-spacing: 0.2em;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+  }
+  
+  p {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.2em;
   }
   
   /* Ensure readable default text size */

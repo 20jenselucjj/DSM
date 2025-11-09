@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Search, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,66 +24,74 @@ import {
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { account, getCurrentUserCached, clearUserCache } from "@/lib/appwrite";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/DSM_BurntSienna-03.png";
 
 const Header = () => {
-  const [searchQuery, setSearchQuery] = useState(
-    sessionStorage.getItem("header-search-query") || "",
-  );
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState<any | null>(null);
+  const [isSearchInitialized, setIsSearchInitialized] = useState(false);
+
+  // Initialize search query from sessionStorage only when needed
+  useEffect(() => {
+    if (!isSearchInitialized) {
+      try {
+        const saved = sessionStorage.getItem("header-search-query");
+        if (saved) setSearchQuery(saved);
+      } catch {
+        // Ignore sessionStorage errors
+      }
+      setIsSearchInitialized(true);
+    }
+  }, [isSearchInitialized]);
 
   // Dispatch custom event when search query changes and persist to sessionStorage
   useEffect(() => {
-    sessionStorage.setItem("header-search-query", searchQuery);
-    const event = new CustomEvent("search-query-changed", {
-      detail: { query: searchQuery },
-    });
-    window.dispatchEvent(event);
-  }, [searchQuery]);
+    if (!isSearchInitialized) return;
+    try {
+      sessionStorage.setItem("header-search-query", searchQuery);
+      const event = new CustomEvent("search-query-changed", {
+        detail: { query: searchQuery },
+      });
+      window.dispatchEvent(event);
+    } catch {
+      // Ignore sessionStorage errors
+    }
+  }, [searchQuery, isSearchInitialized]);
 
-  // Throttle account.get calls to avoid rate limits
-  const COOLDOWN_MS = 30000;
-  const lastFetchRef = useRef<number>(0);
-  const inFlightRef = useRef<Promise<void> | null>(null);
+  // Lazy load user auth - only check when actually needed
+  const authCheckRef = useRef(false);
 
   useEffect(() => {
+    // Only check auth once, and only after initial render is complete
+    if (authCheckRef.current) return;
+    authCheckRef.current = true;
+
     let ignore = false;
 
-    const refreshUser = async (force = false) => {
-      if (!force && Date.now() - lastFetchRef.current < COOLDOWN_MS) return;
-      if (inFlightRef.current) return;
-      const p = (async () => {
-        try {
-          const u = await getCurrentUserCached(force);
-          if (!ignore) setUser(u);
-        } catch (_) {
-          if (!ignore) setUser(null);
-        } finally {
-          lastFetchRef.current = Date.now();
-          inFlightRef.current = null;
+    const checkAuth = async () => {
+      try {
+        const u = await getCurrentUserCached(false);
+        if (!ignore) {
+          setUser(u);
         }
-      })();
-      inFlightRef.current = p;
-      await p;
+      } catch (_) {
+        if (!ignore) {
+          setUser(null);
+        }
+      }
     };
 
-    // Initial check and on route changes
-    void refreshUser(true);
-
-    // Refresh when tab/window regains focus or becomes visible
-    const handleFocus = () => void refreshUser(false);
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") void refreshUser(false);
-    };
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibility);
+    // Defer auth check significantly to not block initial render
+    const timeoutId = setTimeout(() => {
+      void checkAuth();
+    }, 100);
 
     // Listen for app-wide session changes (login/logout)
     const handleSessionChanged = () => {
       clearUserCache();
-      void refreshUser(true);
+      void checkAuth();
     };
     window.addEventListener(
       "appwrite-session-changed",
@@ -92,15 +100,13 @@ const Header = () => {
 
     return () => {
       ignore = true;
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibility);
+      clearTimeout(timeoutId);
       window.removeEventListener(
         "appwrite-session-changed",
         handleSessionChanged as EventListener,
       );
     };
-    // Re-check on route changes so header stays in sync with auth state
-  }, [location.pathname]);
+  }, []);
 
   const initials = (nameOrEmail: string | undefined) => {
     if (!nameOrEmail) return "";
@@ -124,20 +130,67 @@ const Header = () => {
     navigate("/trainer/login");
   };
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = useCallback((id: string) => {
     if (location.pathname !== "/") {
       navigate("/", { state: { scrollTo: id } });
       return;
     }
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [location.pathname, navigate]);
+
+  // Memoize user profile section to avoid re-renders
+  const UserProfile = memo(() => {
+    if (!user) return null;
+    
+    return (
+      <div className="flex items-center gap-3">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="Open account menu"
+              className="inline-flex items-center gap-2"
+            >
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="text-xs font-medium">
+                  {initials(user.name || user.email)}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="bg-background rounded-none z-50 p-1 min-w-[240px]"
+          >
+            <DropdownMenuLabel className="text-[11px] tracking-wider uppercase text-muted-foreground">
+              Account
+            </DropdownMenuLabel>
+            <div className="px-2 py-1.5">
+              <div className="text-xs font-semibold text-foreground">
+                {user.name || user.email}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {user.email}
+              </div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="px-2 py-2 text-[12px] tracking-wide text-destructive"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  });
 
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50">
+    <header className="bg-background border-b border-border sticky top-0 z-50 transform-gpu">
       <div className="container mx-auto px-4 py-8 flex items-center justify-between">
         <div
-          className="flex items-center gap-1 cursor-pointer ml-6 mt-1"
+          className="flex items-center cursor-pointer ml-6"
           onClick={() => navigate("/")}
           role="link"
           aria-label="Go to home page"
@@ -146,38 +199,36 @@ const Header = () => {
             if (e.key === "Enter" || e.key === " ") navigate("/");
           }}
         >
-          <img src={logo} alt="Desert Sports Med" className="h-14" />
-          <div className="flex flex-col leading-none">
-            <span className="text-primary font-semibold text-[30px] tracking-[0.35em] ml-[-2px]">
-              DESERT
-            </span>
-            <span className="text-[10px] font-semibold text-primary tracking-[0.4em] mt-1">
-              SPORTS MED
-            </span>
-          </div>
+          <img 
+            src={logo} 
+            alt="Desert Sports Med" 
+            className="h-16" 
+            loading="eager"
+            decoding="async"
+          />
         </div>
 
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-4" aria-label="Primary">
           <button
             onClick={() => scrollToSection("home")}
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             HOME
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => navigate("/about")}
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             ABOUT
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => scrollToSection("services")}
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             SERVICES
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
 
           <DropdownMenu>
@@ -185,7 +236,7 @@ const Header = () => {
               <button className="text-xs font-medium text-muted-foreground hover:text-primary data-[state=open]:text-primary transition-colors flex items-center gap-1 tracking-wider relative group">
                 PORTALS
                 <ChevronDown className="h-3 w-3" />
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full data-[state=open]:w-full"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-data-[state=open]:scale-x-100"></span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -210,17 +261,17 @@ const Header = () => {
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             CONTACT US
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => scrollToSection("faq")}
             className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
           >
             FAQ
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
 
-          <div className="relative flex items-center">
+          <div className="relative flex items-center ml-2">
             <Search className="h-3 w-3 text-muted-foreground mr-2 transform scaleX(-1)" />
             <input
               type="text"
@@ -232,50 +283,7 @@ const Header = () => {
           </div>
 
           {/* Profile menu (visible when signed in) */}
-          {user && (
-            <div className="flex items-center gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    aria-label="Open account menu"
-                    className="inline-flex items-center gap-2"
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="text-xs font-medium">
-                        {initials(user.name || user.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {user.name || user.email}
-                    </span>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="bg-background rounded-none z-50 p-1 min-w-[240px]"
-                >
-                  <DropdownMenuLabel className="text-[11px] tracking-wider uppercase text-muted-foreground">
-                    Account
-                  </DropdownMenuLabel>
-                  <div className="px-2 py-1.5">
-                    <div className="text-xs font-semibold text-foreground">
-                      {user.name || user.email}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {user.email}
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="px-2 py-2 text-[12px] tracking-wide text-destructive"
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
+          <UserProfile />
         </nav>
 
         {/* Mobile menu */}
@@ -413,4 +421,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
