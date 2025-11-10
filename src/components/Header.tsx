@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback, memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Search, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { account, getCurrentUserCached, clearUserCache } from "@/lib/appwrite";
-import logo from "@/assets/DSM_BurntSienna-03.png";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -199,44 +199,43 @@ const Header = () => {
             if (e.key === "Enter" || e.key === " ") navigate("/");
           }}
         >
-          <img 
-            src={logo} 
+          <OptimizedImage 
+            src={new URL('@/assets/DSM_BurntSienna-03.png', import.meta.url).href}
             alt="Desert Sports Med" 
             className="h-16" 
-            loading="eager"
-            decoding="async"
+            priority={true}
           />
         </div>
 
-        <nav className="hidden lg:flex items-center gap-4" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-6" aria-label="Primary">
           <button
             onClick={() => scrollToSection("home")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
           >
             HOME
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => navigate("/about")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
           >
             ABOUT
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
-            onClick={() => scrollToSection("services")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
+            onClick={() => navigate("/services")}
+            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
           >
             SERVICES
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-xs font-medium text-muted-foreground hover:text-primary data-[state=open]:text-primary transition-colors flex items-center gap-1 tracking-wider relative group">
+              <button className="text-xs font-medium text-muted-foreground transition-colors flex items-center gap-1 tracking-wider relative group">
                 PORTALS
                 <ChevronDown className="h-3 w-3" />
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-data-[state=open]:scale-x-100"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100 group-data-[state=open]:scale-x-100"></span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -258,17 +257,17 @@ const Header = () => {
 
           <button
             onClick={() => scrollToSection("contact")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
           >
             CONTACT US
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => scrollToSection("faq")}
-            className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
           >
             FAQ
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
 
           <div className="relative flex items-center ml-2">
@@ -323,7 +322,7 @@ const Header = () => {
                   <li>
                     <SheetClose asChild>
                       <button
-                        onClick={() => scrollToSection("services")}
+                        onClick={() => navigate("/services")}
                         className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
                       >
                         SERVICES

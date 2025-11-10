@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit, Wand2, Settings } from "lucide-react";
-import VisualEditor from "./VisualEditor";
-import InPlaceEditor from "./InPlaceEditor";
-import EditHistoryManager from "./EditHistoryManager";
+
+// Lazy load heavy editor components
+const VisualEditor = lazy(() => import("./VisualEditor"));
+const InPlaceEditor = lazy(() => import("./InPlaceEditor"));
+const EditHistoryManager = lazy(() => import("./EditHistoryManager"));
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,24 +69,25 @@ const EditablePageWrapper = ({
     }
   }, [pageId, hasCustomContent, enableEdit]);
 
+  // Editor trigger disabled - keeping files for future use
   // Listen for search query changes and check initial value
-  useEffect(() => {
-    // Check initial search query from sessionStorage
-    const initialQuery = sessionStorage.getItem("header-search-query") || "";
-    setShowEditButton(initialQuery.toLowerCase().includes("edit"));
+  // useEffect(() => {
+  //   // Check initial search query from sessionStorage
+  //   const initialQuery = sessionStorage.getItem("header-search-query") || "";
+  //   setShowEditButton(initialQuery.toLowerCase().includes("edit"));
 
-    const handleSearchChange = (e: Event) => {
-      const customEvent = e as CustomEvent<{ query: string }>;
-      const query = customEvent.detail.query.toLowerCase();
-      setShowEditButton(query.includes("edit"));
-    };
+  //   const handleSearchChange = (e: Event) => {
+  //     const customEvent = e as CustomEvent<{ query: string }>;
+  //     const query = customEvent.detail.query.toLowerCase();
+  //     setShowEditButton(query.includes("edit"));
+  //   };
 
-    window.addEventListener("search-query-changed", handleSearchChange);
+  //   window.addEventListener("search-query-changed", handleSearchChange);
 
-    return () => {
-      window.removeEventListener("search-query-changed", handleSearchChange);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("search-query-changed", handleSearchChange);
+  //   };
+  // }, []);
 
   const applyInPlaceChanges = (changes: any[]) => {
     // Apply changes after a short delay to ensure DOM is ready
@@ -208,12 +211,14 @@ const EditablePageWrapper = ({
   // Full page builder mode
   if (editorMode === "full") {
     return (
-      <VisualEditor
-        initialHtml={getInitialHtml()}
-        initialCss={savedCss}
-        onSave={handleSaveFullEditor}
-        onClose={handleClose}
-      />
+      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading editor...</div>}>
+        <VisualEditor
+          initialHtml={getInitialHtml()}
+          initialCss={savedCss}
+          onSave={handleSaveFullEditor}
+          onClose={handleClose}
+        />
+      </Suspense>
     );
   }
 
@@ -221,7 +226,9 @@ const EditablePageWrapper = ({
   if (editorMode === "inplace") {
     return (
       <div className="relative">
-        <InPlaceEditor onSave={handleSaveInPlaceEditor} onClose={handleClose} />
+        <Suspense fallback={<div className="fixed top-4 right-4 bg-background p-4 rounded shadow">Loading editor...</div>}>
+          <InPlaceEditor onSave={handleSaveInPlaceEditor} onClose={handleClose} />
+        </Suspense>
         {hasCustomContent ? (
           <div>
             <style dangerouslySetInnerHTML={{ __html: savedCss }} />
@@ -279,7 +286,9 @@ const EditablePageWrapper = ({
           </DropdownMenu>
 
           {/* Edit History Manager */}
-          <EditHistoryManager />
+          <Suspense fallback={null}>
+            <EditHistoryManager />
+          </Suspense>
 
           {(hasCustomContent || inPlaceChanges.length > 0) && (
             <Button

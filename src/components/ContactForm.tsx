@@ -22,7 +22,7 @@ const ContactForm = () => {
     <section id="contact" className="py-20 bg-primary">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto bg-card p-8 lg:p-12 shadow-lg">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center mb-2 text-secondary tracking-wide">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center mb-2 text-secondary tracking-wide" style={{ position: "relative", letterSpacing: "6px" }}>
             CONTACT US
           </h2>
           <p className="text-center text-xs text-muted-foreground mb-6">
@@ -40,7 +40,7 @@ const ContactForm = () => {
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-input rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
 
@@ -54,7 +54,7 @@ const ContactForm = () => {
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-input rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
 
@@ -68,7 +68,7 @@ const ContactForm = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-input rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
 
@@ -82,7 +82,7 @@ const ContactForm = () => {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 required
                 rows={6}
-                className="w-full px-4 py-2 border border-input rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
               />
             </div>
 

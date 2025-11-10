@@ -445,8 +445,19 @@ COPY & PASTE INTO YOUR CODE
 `;
 
     changesArray.forEach((change, index) => {
+      // Extract text content (strip HTML tags for preview)
+      const textContent = change.content
+        ? change.content.replace(/<[^>]*>/g, "").trim()
+        : "";
+      const textPreview =
+        textContent.length > 100
+          ? textContent.substring(0, 100) + "..."
+          : textContent;
+
       exportText += `\n──── Change ${index + 1}: ${change.tagName.toUpperCase()} ────\n`;
+      exportText += `Page: ${window.location.pathname}\n`;
       exportText += `Location: ${change.selector}\n`;
+      if (textPreview) exportText += `Text: "${textPreview}"\n`;
       if (change.id) exportText += `ID: ${change.id}\n`;
       if (change.classes) exportText += `Classes: ${change.classes}\n`;
       exportText += `\nHTML:\n\`\`\`html\n`;
@@ -501,6 +512,14 @@ ${JSON.stringify(changesArray, null, 2)}
 
     const changesArray = Array.from(changes.values()).map((change) => {
       const element = getElementByUniqueId(change.uniqueId);
+      const textContent = element?.textContent
+        ? element.textContent.replace(/\s+/g, " ").trim()
+        : "";
+      const textPreview =
+        textContent.length > 60
+          ? textContent.substring(0, 60) + "..."
+          : textContent;
+
       return {
         uniqueId: change.uniqueId,
         styles: element?.style.cssText || change.styles,
@@ -508,10 +527,13 @@ ${JSON.stringify(changesArray, null, 2)}
         tagName: element?.tagName.toLowerCase() || "",
         classes: element ? Array.from(element.classList).join(" ") : "",
         id: element?.id || "",
+        textPreview: textPreview,
       };
     });
 
     const aiPrompt = `Apply ${changesArray.length} style changes to src/pages/${fileName}.tsx:
+
+Page: ${window.location.pathname}
 
 ${changesArray
   .map((change, i) => {
@@ -521,9 +543,14 @@ ${changesArray
         ? `className="${change.classes}"`
         : `selector: ${change.selector}`;
 
-    return `${i + 1}. Find <${change.tagName}> with ${identifier}
-   - Add: data-editor-id="${change.uniqueId}"
-   - Add/update: style="${change.styles}"`;
+    let description = `${i + 1}. Find <${change.tagName}> with ${identifier}`;
+    if (change.textPreview) {
+      description += `\n   Text: "${change.textPreview}"`;
+    }
+    description += `\n   - Add: data-editor-id="${change.uniqueId}"`;
+    description += `\n   - Add/update: style="${change.styles}"`;
+
+    return description;
   })
   .join("\n\n")}
 

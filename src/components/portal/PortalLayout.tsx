@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import OptimizedImage from "@/components/OptimizedImage";
 import { animations } from "@/lib/animations";
-import heroImage from "@/assets/IMG_1846 copy.jpg";
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -53,10 +53,11 @@ const PortalLayout = ({
           </div>
           {showHero && (
             <div className={`${heroHeightClasses[heroHeight]} ${animations.fadeIn}`}>
-              <img 
-                src={heroImage} 
+              <OptimizedImage 
+                src={new URL('@/assets/ATportal_header.jpg', import.meta.url).href}
                 alt="Athletic trainers on assignment" 
                 className="h-full w-full object-cover"
+                priority={true}
               />
             </div>
           )}

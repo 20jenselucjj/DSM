@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import heroImage from "@/assets/sc_dsm.jpg";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
 import { memo } from "react";
@@ -16,13 +16,11 @@ const About = () => {
           <div className="container mx-auto px-6 pt-8 pb-4">
             <h1 className="text-center text-3xl sm:text-5xl font-semibold tracking-[0.25em] text-primary">ABOUT US</h1>
           </div>
-          <img
-            src={heroImage}
+          <OptimizedImage
+            src={new URL('@/assets/sc_dsm.jpg', import.meta.url).href}
             alt="Desert landscape"
             className="h-[260px] w-full object-cover sm:h-[340px]"
-            loading="lazy"
-            decoding="async"
-            style={{ contentVisibility: 'auto' }}
+            priority={true}
           />
         </section>
 

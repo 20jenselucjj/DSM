@@ -4,7 +4,6 @@ import WhySection from "@/components/WhySection";
 import Testimonials from "@/components/Testimonials";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
-import EditablePageWrapper from "@/components/EditablePageWrapper";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -24,19 +23,17 @@ const Index = () => {
   }, [location.state]);
 
   return (
-    <EditablePageWrapper pageId="home" enableEdit={true}>
-      <div className="min-h-screen">
-        <Header />
-        <main>
-          <Hero />
-          <WhySection />
-          <div className="mt-10 h-[3px] bg-primary w-64 mx-auto" />
-          <Testimonials />
-          <ContactForm />
-        </main>
-        <Footer />
-      </div>
-    </EditablePageWrapper>
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <Hero />
+        <WhySection />
+        <div className="mt-10 h-[3px] bg-primary w-64 mx-auto" />
+        <Testimonials />
+        <ContactForm />
+      </main>
+      <Footer />
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
@@ -36,9 +35,9 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-semibold text-center mb-12 text-secondary tracking-[0.25em]">
+    <section className="py-20 bg-background" data-editor-id="section-py-20-bg-background-3" style={{ position: "relative" }}>
+      <div className="container mx-auto px-4" data-editor-id="div-container-mx-auto-0" style={{ position: "relative" }}>
+        <h2 className="text-4xl font-semibold text-center mb-12 text-secondary tracking-[0.25em]" data-editor-id="h2-text-4xl-font-semibold-0" style={{ position: "relative" }}>
           WHAT OUR CLIENTS SAY
         </h2>
 
@@ -53,7 +52,7 @@ const Testimonials = () => {
             </button>
 
             <div className="text-center px-4">
-              <p className="text-base md:text-lg text-foreground/80 leading-loose mb-8 italic tracking-wide">
+              <p className="text-base md:text-lg text-foreground/80 leading-loose mb-8 italic tracking-wide" data-editor-id="p-text-base-md-text-lg-0" style={{ position: "relative" }}>
                 "{testimonials[currentIndex].quote}"
               </p>
               <p className="text-xs font-medium text-muted-foreground italic">

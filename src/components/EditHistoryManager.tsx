@@ -241,8 +241,19 @@ COPY & PASTE INTO YOUR CODE
 `;
 
     changes.forEach((change, index) => {
+      // Extract text content (strip HTML tags for preview)
+      const textContent = change.content
+        ? change.content.replace(/<[^>]*>/g, "").trim()
+        : "";
+      const textPreview =
+        textContent.length > 100
+          ? textContent.substring(0, 100) + "..."
+          : textContent;
+
       exportText += `\n──── Change ${index + 1}: ${change.tagName?.toUpperCase() || "ELEMENT"} ────\n`;
+      exportText += `Page: ${pageId}\n`;
       exportText += `Location: ${change.selector}\n`;
+      if (textPreview) exportText += `Text: "${textPreview}"\n`;
       exportText += `\nHTML:\n\`\`\`html\n`;
 
       const tag = change.tagName || "div";
@@ -295,15 +306,31 @@ ${JSON.stringify(changes, null, 2)}
 
     const aiPrompt = `Apply ${changes.length} style changes to src/pages/${fileName}.tsx:
 
+Page: ${pageId}
+
 ${changes
   .map((change, i) => {
     const identifier = change.classes
       ? `className="${change.classes}"`
       : `selector: ${change.selector}`;
 
-    return `${i + 1}. Find <${change.tagName || "div"}> with ${identifier}
-   - Add: data-editor-id="${change.uniqueId}"
-   - Add/update: style="${change.styles}"`;
+    // Extract text content preview
+    const textContent = change.content
+      ? change.content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
+      : "";
+    const textPreview =
+      textContent.length > 60
+        ? textContent.substring(0, 60) + "..."
+        : textContent;
+
+    let description = `${i + 1}. Find <${change.tagName || "div"}> with ${identifier}`;
+    if (textPreview) {
+      description += `\n   Text: "${textPreview}"`;
+    }
+    description += `\n   - Add: data-editor-id="${change.uniqueId}"`;
+    description += `\n   - Add/update: style="${change.styles}"`;
+
+    return description;
   })
   .join("\n\n")}
 

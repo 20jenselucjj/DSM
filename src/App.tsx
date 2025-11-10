@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,29 +6,41 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useSessionTimeout } from "@/hooks/use-session-timeout";
-import EditablePageWrapper from "@/components/EditablePageWrapper";
-import AdminPanel from "@/components/AdminPanel";
-import Index from "./pages/Index";
-import About from "./pages/About";
-import NotFound from "./pages/NotFound";
-import ATPortal from "./pages/ATPortal";
-import CoverageReport from "./pages/CoverageReport";
-import Timesheet from "./pages/Timesheet";
-import EventSchedule from "./pages/EventSchedule";
-import ContactCoordinator from "./pages/ContactCoordinator";
-import TrainerLogin from "./pages/TrainerLogin";
-import TrainerForgotPassword from "./pages/TrainerForgotPassword";
-import VerifyEmail from "./pages/VerifyEmail";
-import ResetPassword from "./pages/ResetPassword";
 
-const queryClient = new QueryClient();
+// Eager load only the home page
+import Index from "./pages/Index";
+
+// Lazy load all other pages
+const Services = lazy(() => import("./pages/Services"));
+const About = lazy(() => import("./pages/About"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const ATPortal = lazy(() => import("./pages/ATPortal"));
+const CoverageReport = lazy(() => import("./pages/CoverageReport"));
+const Timesheet = lazy(() => import("./pages/Timesheet"));
+const EventSchedule = lazy(() => import("./pages/EventSchedule"));
+const ContactCoordinator = lazy(() => import("./pages/ContactCoordinator"));
+const TrainerLogin = lazy(() => import("./pages/TrainerLogin"));
+const TrainerForgotPassword = lazy(() => import("./pages/TrainerForgotPassword"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes
+    },
+  },
+});
 
 const App = () => {
   useSessionTimeout();
 
-  // Enable editing in development or for admin users
-  // In production, you might want to check user role/permissions
-  const enableEditing = import.meta.env.DEV; // Only enable in development
+  const PageLoader = () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -36,104 +49,32 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
-          <Routes>
-            {/* Admin Panel - Access all editable pages */}
-            <Route path="/admin/editor" element={<AdminPanel />} />
-
-            {/* Home page - already wrapped with EditablePageWrapper inside Index.tsx */}
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
             <Route path="/" element={<Index />} />
 
             {/* To make other pages editable, wrap them with EditablePageWrapper */}
-            <Route
-              path="/about"
-              element={
-                <EditablePageWrapper pageId="about" enableEdit={enableEditing}>
-                  <About />
-                </EditablePageWrapper>
-              }
-            />
-
-            <Route
-              path="/at-portal"
-              element={
-                <EditablePageWrapper
-                  pageId="at-portal"
-                  enableEdit={enableEditing}
-                >
-                  <ATPortal />
-                </EditablePageWrapper>
-              }
-            />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/at-portal" element={<ATPortal />} />
 
             {/* Auth routes for Athletic Trainers */}
-            <Route
-              path="/trainer/login"
-              element={
-                <EditablePageWrapper
-                  pageId="trainer-login"
-                  enableEdit={enableEditing}
-                >
-                  <TrainerLogin />
-                </EditablePageWrapper>
-              }
-            />
+            <Route path="/trainer/login" element={<TrainerLogin />} />
             {/* Registration disabled: accounts are created by admins in Appwrite */}
             <Route path="/trainer/forgot" element={<TrainerForgotPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Wrap additional pages that need editing capability */}
-            <Route
-              path="/coverage-report"
-              element={
-                <EditablePageWrapper
-                  pageId="coverage-report"
-                  enableEdit={enableEditing}
-                >
-                  <CoverageReport />
-                </EditablePageWrapper>
-              }
-            />
-
-            <Route
-              path="/timesheet"
-              element={
-                <EditablePageWrapper
-                  pageId="timesheet"
-                  enableEdit={enableEditing}
-                >
-                  <Timesheet />
-                </EditablePageWrapper>
-              }
-            />
-
-            <Route
-              path="/event-schedule"
-              element={
-                <EditablePageWrapper
-                  pageId="event-schedule"
-                  enableEdit={enableEditing}
-                >
-                  <EventSchedule />
-                </EditablePageWrapper>
-              }
-            />
-
-            <Route
-              path="/contact-coordinator"
-              element={
-                <EditablePageWrapper
-                  pageId="contact-coordinator"
-                  enableEdit={enableEditing}
-                >
-                  <ContactCoordinator />
-                </EditablePageWrapper>
-              }
-            />
+            {/* Portal pages */}
+            <Route path="/coverage-report" element={<CoverageReport />} />
+            <Route path="/timesheet" element={<Timesheet />} />
+            <Route path="/event-schedule" element={<EventSchedule />} />
+            <Route path="/contact-coordinator" element={<ContactCoordinator />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

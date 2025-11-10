@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/IMG_1846 copy.jpg";
-import backgroundImage from "@/assets/DSM_graphics_icons-09.png";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const Hero = () => {
   const scrollToContact = () => {
@@ -13,13 +12,11 @@ const Hero = () => {
     <section id="home" className="relative h-[500px] lg:h-[600px] overflow-hidden">
       <div className="container mx-auto h-full relative">
         <div className="absolute left-0 top-0 w-full lg:w-[60%] h-full">
-          <img
-            src={heroImage}
+          <OptimizedImage
+            src={new URL('@/assets/IMG_1846 copy.jpg', import.meta.url).href}
             alt="Athletic trainer at sports event"
             className="w-full h-full object-cover"
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
+            priority={true}
           />
         </div>
 
@@ -27,7 +24,7 @@ const Hero = () => {
           <div 
             className="absolute inset-0 opacity-75 will-change-transform"
             style={{
-              backgroundImage: `url(${backgroundImage})`,
+              backgroundImage: `url(${new URL('@/assets/DSM_graphics_icons-09.png', import.meta.url).href})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               willChange: 'transform'

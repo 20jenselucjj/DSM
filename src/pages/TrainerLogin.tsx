@@ -98,7 +98,7 @@ const TrainerLogin = () => {
 
   return (
     <PortalLayout
-      title="Trainer Login"
+      title="TRAINER LOGIN"
       description="Sign in to access AT Portal tools and resources."
       showHero
       heroHeight="md"
@@ -106,10 +106,10 @@ const TrainerLogin = () => {
     >
       <Card className="mx-auto">
         <CardHeader>
-          <CardTitle>Secure Login</CardTitle>
-          <CardDescription>Only verified Athletic Trainers may sign in.</CardDescription>
+          <CardTitle className="font-bold">Secure Login</CardTitle>
+          <CardDescription className="font-bold">Only verified Athletic Trainers may sign in.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 font-bold">
           {locked && (
             <div className="rounded-md bg-destructive/10 text-destructive px-3 py-2 text-sm" role="alert" aria-live="polite">
               Account temporarily locked due to failed attempts. Try again in {formatRemaining(lockRemaining)}.

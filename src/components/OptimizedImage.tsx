@@ -1,4 +1,4 @@
-import { ImgHTMLAttributes, useState, useEffect, useRef } from "react";
+import { ImgHTMLAttributes, useState } from "react";
 
 interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -15,40 +15,16 @@ const OptimizedImage = ({
   ...props
 }: OptimizedImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    if (priority) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInView(true);
-            observer.disconnect();
-          }
-        });
-      },
-      { rootMargin: "50px" }
-    );
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [priority]);
 
   return (
     <img
-      ref={imgRef}
-      src={isInView ? src : undefined}
+      src={src}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
+      fetchPriority={priority ? "high" : "auto"}
       onLoad={() => setIsLoaded(true)}
-      className={`${className} ${!isLoaded && isInView ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+      className={`${className} ${!isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
       {...props}
     />
   );

@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import heroImage from "@/assets/IMG_1846 copy.jpg";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -68,10 +68,11 @@ const ATPortal = () => {
 
         {/* Hero with branded overlay and CTAs */}
         <section className="relative h-[280px] sm:h-[380px] lg:h-[460px]">
-          <img
-            src={heroImage}
+          <OptimizedImage
+            src={new URL('@/assets/ATportal_header.jpg', import.meta.url).href}
             alt="Athletic trainers on assignment"
             className="absolute inset-0 h-full w-full object-cover"
+            priority={true}
           />
           {/* Brand overlay for cohesion with home page */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary/40 to-secondary/40 mix-blend-multiply" />
