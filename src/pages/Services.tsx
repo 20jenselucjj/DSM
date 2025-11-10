@@ -14,19 +14,19 @@ interface Service {
 const services: Service[] = [
   {
     id: 'injured-athlete',
-    image: new URL('@/assets/1.jpg', import.meta.url).href,
+    image: new URL('@/assets/1.webp', import.meta.url).href,
     title: 'INJURED ATHLETE',
     subtitle: 'CARE ON & OFF FIELD'
   },
   {
     id: 'sideline-medical',
-    image: new URL('@/assets/2.jpg', import.meta.url).href,
+    image: new URL('@/assets/2.webp', import.meta.url).href,
     title: 'SIDELINE MEDICAL',
     subtitle: 'COVERAGE'
   },
   {
     id: 'sports-medicine',
-    image: new URL('@/assets/4.jpg', import.meta.url).href,
+    image: new URL('@/assets/4.webp', import.meta.url).href,
     title: 'SPORTS MEDICINE',
     subtitle: '& MANUAL THERAPY'
   }
@@ -53,7 +53,7 @@ const Services = () => {
             </div>
             <div className="relative" data-editor-id="div-relative-1" style={{}}>
               <OptimizedImage
-                src={new URL('@/assets/services_web.jpg', import.meta.url).href}
+                src={new URL('@/assets/services_web.webp', import.meta.url).href}
                 alt="Sports field"
                 className="h-[260px] w-full object-cover sm:h-[340px]"
                 priority={true}
@@ -106,7 +106,7 @@ const Services = () => {
                 {/* Background Image - Full Width */}
                 <div className="absolute inset-0 w-full h-full">
                   <OptimizedImage
-                    src={new URL('@/assets/IMG_1846 copy.jpg', import.meta.url).href}
+                    src={new URL('@/assets/IMG_1846 copy.webp', import.meta.url).href}
                     alt="Athletic trainer"
                     className="w-full h-full object-cover"
                   />

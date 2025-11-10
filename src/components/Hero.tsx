@@ -13,7 +13,7 @@ const Hero = () => {
       <div className="container mx-auto h-full relative">
         <div className="absolute left-0 top-0 w-full lg:w-[60%] h-full">
           <OptimizedImage
-            src={new URL('@/assets/IMG_1846 copy.jpg', import.meta.url).href}
+            src={new URL('@/assets/IMG_1846 copy.webp', import.meta.url).href}
             alt="Athletic trainer at sports event"
             className="w-full h-full object-cover"
             priority={true}
@@ -24,7 +24,7 @@ const Hero = () => {
           <div 
             className="absolute inset-0 opacity-75 will-change-transform"
             style={{
-              backgroundImage: `url(${new URL('@/assets/DSM_graphics_icons-09.png', import.meta.url).href})`,
+              backgroundImage: `url(${new URL('@/assets/DSM_graphics_icons-09.webp', import.meta.url).href})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               willChange: 'transform'

@@ -200,7 +200,7 @@ const Header = () => {
           }}
         >
           <OptimizedImage 
-            src={new URL('@/assets/DSM_BurntSienna-03.png', import.meta.url).href}
+            src={new URL('@/assets/DSM_BurntSienna-03.webp', import.meta.url).href}
             alt="Desert Sports Med" 
             className="h-16" 
             priority={true}

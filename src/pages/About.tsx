@@ -17,7 +17,7 @@ const About = () => {
             <h1 className="text-center text-3xl sm:text-5xl font-semibold tracking-[0.25em] text-primary">ABOUT US</h1>
           </div>
           <OptimizedImage
-            src={new URL('@/assets/sc_dsm.jpg', import.meta.url).href}
+            src={new URL('@/assets/sc_dsm.webp', import.meta.url).href}
             alt="Desert landscape"
             className="h-[260px] w-full object-cover sm:h-[340px]"
             priority={true}

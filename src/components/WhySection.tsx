@@ -12,7 +12,7 @@ const WhySection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-12 max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center" data-editor-id="div-flex-flex-col-1" style={{ position: "relative" }}>
             <div className="mb-6 h-32 flex items-center justify-center">
-              <OptimizedImage src={new URL('@/assets/Certified.png', import.meta.url).href} alt="Professional certification" className="h-24 w-auto" />
+              <OptimizedImage src={new URL('@/assets/Certified.webp', import.meta.url).href} alt="Professional certification" className="h-24 w-auto" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide" data-editor-id="h3-text-lg-font-bold-1" style={{ position: "relative" }}>
               PROFESSIONAL AND CERTIFIED EXPERTISE
@@ -26,7 +26,7 @@ const WhySection = () => {
 
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
-              <OptimizedImage src={new URL('@/assets/handshake.png', import.meta.url).href} alt="Comprehensive coverage" className="h-24 w-auto" />
+              <OptimizedImage src={new URL('@/assets/handshake.webp', import.meta.url).href} alt="Comprehensive coverage" className="h-24 w-auto" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide">
               COMPREHENSIVE COVERAGE YOU CAN TRUST
@@ -40,7 +40,7 @@ const WhySection = () => {
 
           <div className="flex flex-col items-center text-center">
             <div className="mb-6 h-32 flex items-center justify-center">
-              <OptimizedImage src={new URL('@/assets/Heartbeat.png', import.meta.url).href} alt="Athlete health and safety" className="h-24 w-auto" />
+              <OptimizedImage src={new URL('@/assets/Heartbeat.webp', import.meta.url).href} alt="Athlete health and safety" className="h-24 w-auto" />
             </div>
             <h3 className="text-lg font-bold mb-4 text-secondary tracking-wide">
               DEDICATED TO ATHLETE HEALTH AND SAFETY

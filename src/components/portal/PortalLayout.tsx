@@ -54,7 +54,7 @@ const PortalLayout = ({
           {showHero && (
             <div className={`${heroHeightClasses[heroHeight]} ${animations.fadeIn}`}>
               <OptimizedImage 
-                src={new URL('@/assets/ATportal_header.jpg', import.meta.url).href}
+                src={new URL('@/assets/ATportal_header.webp', import.meta.url).href}
                 alt="Athletic trainers on assignment" 
                 className="h-full w-full object-cover"
                 priority={true}

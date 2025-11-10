@@ -69,7 +69,7 @@ const ATPortal = () => {
         {/* Hero with branded overlay and CTAs */}
         <section className="relative h-[280px] sm:h-[380px] lg:h-[460px]">
           <OptimizedImage
-            src={new URL('@/assets/ATportal_header.jpg', import.meta.url).href}
+            src={new URL('@/assets/ATportal_header.webp', import.meta.url).href}
             alt="Athletic trainers on assignment"
             className="absolute inset-0 h-full w-full object-cover"
             priority={true}

@@ -14,13 +14,16 @@ export default defineConfig(() => ({
     react(),
     ViteImageOptimizer({
       jpg: {
-        quality: 75,
+        quality: 65, // More aggressive for large photos
       },
       jpeg: {
-        quality: 75,
+        quality: 65,
       },
       png: {
-        quality: 75,
+        quality: 80, // PNGs compress well
+      },
+      webp: {
+        quality: 70,
       },
     }),
   ],
