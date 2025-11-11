@@ -150,10 +150,20 @@ All colors MUST be HSL.
     max-width: 100%;
   }
 
-  /* Enhanced focus styles for accessibility */
+  /* Enhanced focus styles for accessibility - only show on keyboard navigation */
   *:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
+  }
+
+  /* Remove focus outline on mouse click */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Ensure buttons don't show persistent focus after click */
+  button:focus:not(:focus-visible) {
+    outline: none;
   }
 
   /* Smooth scrolling for better UX */

@@ -131,6 +131,7 @@ const TrainerLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={locked}
+                className="placeholder:opacity-30"
               />
             </div>
             <div className="grid gap-2">
@@ -144,7 +145,7 @@ const TrainerLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={locked}
-                  className="pr-10"
+                  className="pr-10 placeholder:opacity-30"
                 />
                 <button
                   type="button"

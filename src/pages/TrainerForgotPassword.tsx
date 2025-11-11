@@ -62,7 +62,7 @@ const TrainerForgotPassword = () => {
             <>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="trainer@example.com" />
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="trainer@example.com" className="placeholder:opacity-30" />
               </div>
               <Button className="w-full" type="submit" disabled={loading}>
                 {loading ? "Sending..." : "Send Reset Link"}
