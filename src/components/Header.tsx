@@ -131,6 +131,18 @@ const Header = () => {
   };
 
   const scrollToSection = useCallback((id: string) => {
+    // FAQ is on the about page
+    if (id === "faq") {
+      if (location.pathname !== "/about") {
+        navigate("/about", { state: { scrollTo: id } });
+        return;
+      }
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    
+    // Other sections are on the home page
     if (location.pathname !== "/") {
       navigate("/", { state: { scrollTo: id } });
       return;
