@@ -14,17 +14,21 @@ export default defineConfig(() => ({
     react(),
     ViteImageOptimizer({
       jpg: {
-        quality: 65, // More aggressive for large photos
+        quality: 55, // More aggressive compression
       },
       jpeg: {
-        quality: 65,
+        quality: 55,
       },
       png: {
-        quality: 80, // PNGs compress well
+        quality: 70, // Reduce PNG quality slightly
       },
       webp: {
-        quality: 70,
+        quality: 60, // More aggressive WebP compression
+        lossless: false,
       },
+      // Add size limits to force resize of very large images
+      cache: false,
+      test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,
     }),
   ],
   resolve: {
@@ -36,6 +40,13 @@ export default defineConfig(() => ({
     outDir: "dist",
     assetsDir: "assets",
     chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -62,12 +73,23 @@ export default defineConfig(() => ({
           if (id.includes('appwrite')) {
             return 'appwrite';
           }
+          // Split chart libraries separately
+          if (id.includes('recharts') || id.includes('d3')) {
+            return 'chart-libs';
+          }
+          // Split date libraries
+          if (id.includes('date-fns') || id.includes('react-day-picker')) {
+            return 'date-libs';
+          }
           // Split other vendor code
           if (id.includes('node_modules')) {
             return 'vendor';
           }
         },
+
       },
     },
+    // CSS optimization
+    cssCodeSplit: true,
   },
 }));
