@@ -7,17 +7,6 @@ const endpoint = import.meta.env.VITE_APPWRITE_ENDPOINT ?? "https://sfo.cloud.ap
 const projectId = import.meta.env.VITE_APPWRITE_PROJECT_ID ?? "68efa91c002473ac048a";
 client.setEndpoint(endpoint).setProject(projectId);
 
-// Optional: bypass client-side rate limits during local development using a Dev Key
-// Do NOT set VITE_APPWRITE_DEV_KEY in production builds.
-const devKey = import.meta.env.VITE_APPWRITE_DEV_KEY as string | undefined;
-if (devKey && import.meta.env.DEV) {
-  try {
-    // Available in recent Appwrite Web SDKs
-    // https://appwrite.io/blog/post/improve-devex-dev-keys
-    (client as any).setDevKey?.(devKey);
-  } catch {}
-}
-
 export const account = new Account(client);
 export { ID };
 

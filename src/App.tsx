@@ -51,28 +51,28 @@ const App = () => {
           <ScrollToTop />
           <Suspense fallback={<PageLoader />}>
             <Routes>
-            <Route path="/" element={<Index />} />
+              <Route path="/" element={<Index />} />
 
-            {/* To make other pages editable, wrap them with EditablePageWrapper */}
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/at-portal" element={<ATPortal />} />
+              {/* To make other pages editable, wrap them with EditablePageWrapper */}
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/at-portal" element={<ATPortal />} />
 
-            {/* Auth routes for Athletic Trainers */}
-            <Route path="/trainer/login" element={<TrainerLogin />} />
-            {/* Registration disabled: accounts are created by admins in Appwrite */}
-            <Route path="/trainer/forgot" element={<TrainerForgotPassword />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+              {/* Auth routes for Athletic Trainers */}
+              <Route path="/trainer/login" element={<TrainerLogin />} />
+              {/* Registration disabled: accounts are created by admins in Appwrite */}
+              <Route path="/trainer/forgot" element={<TrainerForgotPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Portal pages */}
-            <Route path="/coverage-report" element={<CoverageReport />} />
-            <Route path="/timesheet" element={<Timesheet />} />
-            <Route path="/event-schedule" element={<EventSchedule />} />
-            <Route path="/contact-coordinator" element={<ContactCoordinator />} />
+              {/* Portal pages */}
+              <Route path="/coverage-report" element={<CoverageReport />} />
+              <Route path="/timesheet" element={<Timesheet />} />
+              <Route path="/event-schedule" element={<EventSchedule />} />
+              <Route path="/contact-coordinator" element={<ContactCoordinator />} />
 
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
