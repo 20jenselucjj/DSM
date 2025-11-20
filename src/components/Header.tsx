@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Search, Menu } from "lucide-react";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -84,24 +84,27 @@ const Header = () => {
           />
         </div>
 
-        <nav className="hidden lg:flex items-center gap-6" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-10" aria-label="Primary">
           <button
             onClick={() => scrollToSection("home")}
-            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors relative group"
+            style={{ letterSpacing: '0.3em' }}
           >
             HOME
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => navigate("/about")}
-            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors relative group"
+            style={{ letterSpacing: '0.3em' }}
           >
             ABOUT
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => navigate("/services")}
-            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors relative group"
+            style={{ letterSpacing: '0.3em' }}
           >
             SERVICES
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
@@ -109,14 +112,16 @@ const Header = () => {
 
           <button
             onClick={() => scrollToSection("contact")}
-            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors relative group"
+            style={{ letterSpacing: '0.3em' }}
           >
             CONTACT US
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
           </button>
           <button
             onClick={() => scrollToSection("faq")}
-            className="text-xs font-medium text-muted-foreground transition-colors tracking-wider relative group"
+            className="text-xs font-medium text-muted-foreground transition-colors relative group"
+            style={{ letterSpacing: '0.3em' }}
           >
             FAQ
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#a35f44] origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
@@ -147,12 +152,13 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right" className="p-4 [&>button]:hidden">
               <nav aria-label="Mobile">
-                <ul className="space-y-1">
+                <ul className="space-y-4">
                   <li>
                     <SheetClose asChild>
                       <button
                         onClick={() => scrollToSection("home")}
-                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        className="w-full text-sm font-medium px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        style={{ letterSpacing: '0.3em' }}
                       >
                         HOME
                       </button>
@@ -162,7 +168,8 @@ const Header = () => {
                     <SheetClose asChild>
                       <button
                         onClick={() => navigate("/about")}
-                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        className="w-full text-sm font-medium px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        style={{ letterSpacing: '0.3em' }}
                       >
                         ABOUT
                       </button>
@@ -172,7 +179,8 @@ const Header = () => {
                     <SheetClose asChild>
                       <button
                         onClick={() => navigate("/services")}
-                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        className="w-full text-sm font-medium px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        style={{ letterSpacing: '0.3em' }}
                       >
                         SERVICES
                       </button>
@@ -182,7 +190,8 @@ const Header = () => {
                     <SheetClose asChild>
                       <button
                         onClick={() => scrollToSection("contact")}
-                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        className="w-full text-sm font-medium px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        style={{ letterSpacing: '0.3em' }}
                       >
                         CONTACT US
                       </button>
@@ -192,7 +201,8 @@ const Header = () => {
                     <SheetClose asChild>
                       <button
                         onClick={() => scrollToSection("faq")}
-                        className="w-full text-sm font-medium tracking-wider px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        className="w-full text-sm font-medium px-4 py-3 rounded hover:text-primary hover:underline hover:decoration-primary focus:text-primary focus:underline focus:decoration-primary decoration-2 underline-offset-4 focus:outline-none focus:ring-2 focus:ring-ring text-foreground"
+                        style={{ letterSpacing: '0.3em' }}
                       >
                         FAQ
                       </button>
