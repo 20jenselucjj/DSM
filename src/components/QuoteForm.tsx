@@ -17,7 +17,9 @@ const QuoteForm = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [buttonText, setButtonText] = useState("CONTACT US");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic email validation
@@ -27,16 +29,46 @@ const QuoteForm = () => {
       return;
     }
 
-    // Show success toast
-    toast.success("Thank you for your request! We'll be in touch soon.");
-    
-    // Reset form state
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      message: "",
-    });
+    setButtonText("SENDING...");
+
+    try {
+      const response = await fetch(import.meta.env.VITE_FORM_WORKER_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          message: formData.message,
+          formType: 'quote',
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setButtonText("TALK TO YOU SOON!");
+        toast.success("Thank you for your request! We'll be in touch soon.");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          message: "",
+        });
+        
+        // Reset button text after 3 seconds
+        setTimeout(() => setButtonText("CONTACT US"), 3000);
+      } else {
+        setButtonText("CONTACT US");
+        toast.error(result.error || "Failed to send request. Please try again.");
+      }
+    } catch (error) {
+      setButtonText("CONTACT US");
+      toast.error("Failed to send request. Please check your connection and try again.");
+      console.error('Form submission error:', error);
+    }
   };
 
   return (
@@ -112,7 +144,7 @@ const QuoteForm = () => {
             data-editor-id="button-inline-flex-items-center-0"
             style={{ position: "relative", borderColor: "#414759", color: "#414759", borderWidth: "1px", borderStyle: "solid" }}
           >
-            CONTACT US
+            {buttonText}
           </Button>
         </div>
       </form>
