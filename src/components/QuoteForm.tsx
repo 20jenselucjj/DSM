@@ -73,10 +73,10 @@ const QuoteForm = () => {
 
   return (
     <>
-      <h2 className="text-3xl lg:text-4xl font-bold text-center mb-2 text-secondary tracking-[0.2em] whitespace-nowrap" data-editor-id="h2-text-3xl-lg-text-4xl-0" style={{ position: "relative", maxWidth: "100%", margin: "0px auto", fontSize: "clamp(24px, 5vw, 34px)", width: "416px", height: "53px" }}>
+      <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold text-center mb-2 text-secondary tracking-[0.08em] sm:tracking-[0.15em] lg:tracking-[0.2em] whitespace-nowrap">
         REQUEST A QUOTE
       </h2>
-      <p className="text-center text-xs text-muted-foreground tracking-[0.2em] mb-6" data-editor-id="p-text-center-text-xs-1" style={{ position: "relative", maxWidth: "416px", margin: "0px auto 1.5rem", fontWeight: 600, fontSize: "13px", letterSpacing: "1.5px", color: "rgb(140, 56, 32)" }}>
+      <p className="text-center text-xs text-muted-foreground tracking-[0.1em] sm:tracking-[0.15em] lg:tracking-[0.2em] mb-6 px-2" style={{ fontWeight: 600, color: "rgb(140, 56, 32)" }}>
         Get in touch with us to set up coverage
       </p>
 
