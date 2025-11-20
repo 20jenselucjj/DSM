@@ -69,10 +69,6 @@ export default defineConfig(() => ({
           if (id.includes('react-hook-form') || id.includes('zod') || id.includes('@hookform')) {
             return 'form-libs';
           }
-          // Split Appwrite
-          if (id.includes('appwrite')) {
-            return 'appwrite';
-          }
           // Split chart libraries separately
           if (id.includes('recharts') || id.includes('d3')) {
             return 'chart-libs';
