@@ -62,8 +62,8 @@ export default {
       // Determine subject and content based on form type
       const isQuote = formType === 'quote';
       const subject = isQuote 
-        ? `📋 Quote Request from ${firstName} ${lastName}`
-        : `📬 New Contact Inquiry from ${firstName} ${lastName}`;
+        ? `Quote Request from ${firstName} ${lastName}`
+        : `New Contact Inquiry from ${firstName} ${lastName}`;
 
       const formTypeLabel = isQuote ? 'Quote Request' : 'Contact Form Inquiry';
       const formTypeColor = isQuote ? '#8C3820' : '#414759';
@@ -76,16 +76,19 @@ export default {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${formTypeLabel}</title>
+  <!--[if !mso]><!--><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
+    ${isQuote ? `New quote request from ${firstName} ${lastName} - Reply to ${email}` : `New contact inquiry from ${firstName} ${lastName} - Reply to ${email}`}
+  </div><!--<![endif]-->
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
   <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f4f4f4;">
     <tr>
-      <td align="center" style="padding: 40px 20px;">
+      <td align="center" style="padding: 40px 20px; font-size: 16px;">
         <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          
+
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, ${formTypeColor} 0%, #2c3e50 100%); padding: 40px 30px; text-align: center;">
+            <td style="background: linear-gradient(135deg, ${formTypeColor} 0%, #1e2a3a 100%); padding: 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: 1px;">
                 DESERT SPORTS MED
               </h1>
@@ -102,7 +105,7 @@ export default {
               <!-- Alert Badge -->
               <div style="background-color: ${formTypeColor}15; border-left: 4px solid ${formTypeColor}; padding: 15px 20px; margin-bottom: 30px; border-radius: 4px;">
                 <p style="margin: 0; color: ${formTypeColor}; font-size: 14px; font-weight: 600;">
-                  ${isQuote ? '🎯 New quote request received' : '✉️ New contact form submission received'}
+                  ${isQuote ? 'New Request:' : 'New Message:'}
                 </p>
               </div>
 
@@ -130,7 +133,7 @@ export default {
                           <strong style="color: #555555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Email</strong>
                         </td>
                         <td style="vertical-align: top;">
-                          <a href="mailto:${email}" style="color: #2563eb; font-size: 15px; text-decoration: none; font-weight: 500;">${email}</a>
+                          <span style="color: #222222; font-size: 15px; font-weight: 500;">${email}</span>
                         </td>
                       </tr>
                     </table>
@@ -151,6 +154,7 @@ export default {
                             day: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit',
+                            timeZone: 'America/Denver',
                             timeZoneName: 'short'
                           })}</span>
                         </td>
@@ -187,6 +191,11 @@ export default {
               <p style="margin: 0 0 10px 0; color: #666666; font-size: 13px; line-height: 1.5;">
                 This ${formTypeLabel.toLowerCase()} was submitted through the<br>
                 <strong style="color: #222222;">Desert Sports Med</strong> website
+              </p>
+              <p style="margin: 10px 0 10px 0;">
+                <a href="https://dsm-2p1.pages.dev" style="color: ${formTypeColor}; text-decoration: none; font-weight: 600;">
+                  Visit Our Website
+                </a>
               </p>
               <p style="margin: 10px 0 0 0; color: #999999; font-size: 12px;">
                 © ${new Date().getFullYear()} Desert Sports Med. All rights reserved.
