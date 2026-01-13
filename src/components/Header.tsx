@@ -65,9 +65,9 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50 transform-gpu">
-      <div className="container mx-auto px-4 py-8 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-5 flex items-center justify-between">
         <div
-          className="flex items-center cursor-pointer ml-6"
+          className="flex items-center cursor-pointer lg:ml-6"
           onClick={() => navigate("/")}
           role="link"
           aria-label="Go to home page"
@@ -79,7 +79,7 @@ const Header = () => {
           <OptimizedImage 
             src={new URL('@/assets/DSM_BurntSienna-03.webp', import.meta.url).href}
             alt="Desert Sports Med" 
-            className="h-16" 
+            className="h-14 lg:h-16" 
             priority={true}
           />
         </div>

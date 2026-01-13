@@ -59,11 +59,11 @@ const Services = () => {
                 priority={true}
               />
               {/* Request Quote Button Overlay */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2" style={{ zIndex: 9999, pointerEvents: "auto" }}>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 z-20 lg:z-40 pointer-events-auto">
                 <button 
                   onClick={scrollToQuote}
-                  className="rounded-full bg-accent text-accent-foreground px-6 sm:px-8 py-2 text-xs tracking-[0.15em] sm:tracking-[0.2em] hover:opacity-90 transition-opacity shadow-lg cursor-pointer whitespace-nowrap" 
-                  style={{ backgroundColor: "rgb(163, 95, 68)", zIndex: 9999, pointerEvents: "auto" }}
+                  className="rounded-full bg-accent text-accent-foreground px-6 sm:px-8 py-2 text-xs tracking-[0.15em] sm:tracking-[0.2em] hover:opacity-90 transition-opacity shadow-lg cursor-pointer whitespace-nowrap pointer-events-auto"
+                  style={{ backgroundColor: "rgb(163, 95, 68)" }}
                 >
                   REQUEST QUOTE
                 </button>
@@ -102,8 +102,8 @@ const Services = () => {
           <section id="quote-section" className="relative bg-background pb-20">
             <div className="container mx-auto px-6 max-w-7xl">
               <div className="relative min-h-[600px] lg:min-h-[700px]">
-                {/* Background Image - Full Width */}
-                <div className="absolute inset-0 w-full h-full">
+                {/* Background Image - Full Width (Desktop only) */}
+                <div className="hidden lg:block absolute inset-0 w-full h-full">
                   <OptimizedImage
                     src={new URL('@/assets/IMG_1846 copy.webp', import.meta.url).href}
                     alt="Athletic trainer"
@@ -111,10 +111,22 @@ const Services = () => {
                   />
                 </div>
                 
-                {/* Form Card - Overlapping on the right */}
+                {/* Form Card - Overlapping on the right for desktop, full width with background for mobile */}
                 <div className="relative z-10 flex items-center justify-center lg:justify-end min-h-[600px] lg:min-h-[700px] py-8 lg:py-12">
-                  <div className="bg-card p-6 sm:p-8 lg:p-12 shadow-2xl max-w-md w-full lg:max-w-lg lg:mr-8">
-                    <QuoteForm />
+                  <div className="relative bg-card p-6 sm:p-8 lg:p-12 shadow-2xl max-w-md w-full lg:max-w-lg lg:mr-8">
+                    {/* Mobile Background Image with Blur */}
+                    <div className="lg:hidden absolute inset-0 z-0">
+                      <OptimizedImage
+                        src={new URL('@/assets/IMG_1846 copy.webp', import.meta.url).href}
+                        alt="Athletic trainer"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-background/80" />
+                    </div>
+                    
+                    <div className="relative z-10">
+                      <QuoteForm />
+                    </div>
                   </div>
                 </div>
               </div>

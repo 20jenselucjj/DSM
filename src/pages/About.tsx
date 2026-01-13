@@ -81,13 +81,13 @@ const About = () => {
                   <div className="h-[220px] w-[220px] rounded-full bg-primary-foreground" />
                 </div>
               </div>
-              <div className="flex-1 text-left max-w-xl mr-auto">
-                <h3 className="text-lg md:text-xl tracking-[0.25em] font-semibold mb-2 whitespace-nowrap">NICK JENSEN | MAT, LAT, ATC</h3>
-                <div className="flex items-center justify-end mb-6">
-                  <p className="text-[11px] uppercase tracking-[0.25em] opacity-80 text-right">CO-OWNER</p>
+              <div className="flex-1 text-left max-w-xl mr-auto md:text-right">
+                <h3 className="text-lg md:text-xl tracking-[0.25em] font-semibold mb-2">NICK JENSEN | MAT, LAT, ATC</h3>
+                <div className="flex items-center justify-start md:justify-end mb-6">
+                  <p className="text-[11px] uppercase tracking-[0.25em] opacity-80">CO-OWNER</p>
                   <div className="w-16 h-px bg-accent ml-3"></div>
                 </div>
-                <p className="text-sm opacity-95 text-right tracking-wide leading-loose">
+                <p className="text-sm opacity-95 tracking-wide leading-loose">
                   "Having a certified athletic trainer from Desert Sports Med on our sidelines has been invaluable. When
                   one of our players suffered a potential concussion, their quick assessment and proper protocols
                   ensured the player's safety. Their expertise has been crucial for our team's success."
