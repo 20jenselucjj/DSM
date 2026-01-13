@@ -69,9 +69,11 @@ const ContactForm = () => {
               <input
                 type="text"
                 id="firstName"
+                name="firstName"
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 required
+                autoComplete="given-name"
                 className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
@@ -83,9 +85,11 @@ const ContactForm = () => {
               <input
                 type="text"
                 id="lastName"
+                name="lastName"
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                 required
+                autoComplete="family-name"
                 className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
@@ -97,9 +101,11 @@ const ContactForm = () => {
               <input
                 type="email"
                 id="email"
+                name="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
+                autoComplete="email"
                 className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
@@ -110,9 +116,11 @@ const ContactForm = () => {
               </label>
               <textarea
                 id="message"
+                name="message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 required
+                autoComplete="off"
                 rows={6}
                 className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
               />

@@ -7,6 +7,9 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 
 const Header = () => {
@@ -131,9 +134,11 @@ const Header = () => {
             <Search className="h-3 w-3 text-muted-foreground mr-2 transform scaleX(-1)" />
             <input
               type="text"
+              name="desktop-search"
               placeholder=""
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              autoComplete="off"
               className="pl-3 pr-3 py-1 text-xs border border-muted-foreground/30 rounded bg-background focus:outline-none focus:ring-1 focus:ring-ring w-32"
             />
           </div>
@@ -151,6 +156,10 @@ const Header = () => {
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="p-4 [&>button]:hidden">
+              <SheetHeader>
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                <SheetDescription className="sr-only">Main navigation menu for mobile devices</SheetDescription>
+              </SheetHeader>
               <nav aria-label="Mobile">
                 <ul className="space-y-4">
                   <li>
@@ -214,9 +223,11 @@ const Header = () => {
                   <Search className="h-4 w-4 text-muted-foreground transform scaleX(-1)" />
                   <input
                     type="text"
+                    name="mobile-search"
                     placeholder="Search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    autoComplete="off"
                     className="flex-1 px-3 py-2 text-sm border border-muted-foreground/30 rounded bg-background focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
