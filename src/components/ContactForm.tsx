@@ -1,18 +1,43 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const formSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    message: "",
-  });
   const [buttonText, setButtonText] = useState("CONTACT US");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      message: "",
+    },
+  });
+
+  const onSubmit = async (data: FormValues) => {
     setButtonText("SENDING...");
 
     try {
@@ -22,10 +47,7 @@ const ContactForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          message: formData.message,
+          ...data,
           formType: 'contact',
         }),
       });
@@ -35,7 +57,7 @@ const ContactForm = () => {
       if (response.ok) {
         setButtonText("TALK TO YOU SOON!");
         toast.success("Thank you for reaching out! We'll be in touch soon.");
-        setFormData({ firstName: "", lastName: "", email: "", message: "" });
+        form.reset();
         
         // Reset button text after 3 seconds
         setTimeout(() => setButtonText("CONTACT US"), 3000);
@@ -61,83 +83,95 @@ const ContactForm = () => {
             Get in touch with us to set up coverage
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="firstName" className="block text-xs font-medium mb-2 text-foreground">
-                FIRST NAME
-              </label>
-              <input
-                type="text"
-                id="firstName"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
                 name="firstName"
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                required
-                autoComplete="given-name"
-                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium mb-2 text-foreground">FIRST NAME</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="given-name"
+                        className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label htmlFor="lastName" className="block text-xs font-medium mb-2 text-foreground">
-                LAST NAME
-              </label>
-              <input
-                type="text"
-                id="lastName"
+              <FormField
+                control={form.control}
                 name="lastName"
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                required
-                autoComplete="family-name"
-                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium mb-2 text-foreground">LAST NAME</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="family-name"
+                        className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label htmlFor="email" className="block text-xs font-medium mb-2 text-foreground">
-                EMAIL
-              </label>
-              <input
-                type="email"
-                id="email"
+              <FormField
+                control={form.control}
                 name="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                autoComplete="email"
-                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium mb-2 text-foreground">EMAIL</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        autoComplete="email"
+                        className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label htmlFor="message" className="block text-xs font-medium mb-2 text-foreground">
-                HOW CAN WE HELP?
-              </label>
-              <textarea
-                id="message"
+              <FormField
+                control={form.control}
                 name="message"
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required
-                autoComplete="off"
-                rows={6}
-                className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium mb-2 text-foreground">HOW CAN WE HELP?</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={6}
+                        className="w-full px-4 py-2 border border-secondary/40 rounded-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="text-center">
-              <Button
-                type="submit"
-                className={
-                  // Match About page button styling regardless of text state
-                  "rounded-full border border-primary px-6 py-2 text-primary hover:bg-primary hover:text-primary-foreground transition-colors tracking-widest text-xs bg-transparent"
-                }
-              >
-                {buttonText}
-              </Button>
-            </div>
-          </form>
+              <div className="text-center">
+                <Button
+                  type="submit"
+                  className={
+                    // Match About page button styling regardless of text state
+                    "rounded-full border border-primary px-6 py-2 text-primary hover:bg-primary hover:text-primary-foreground transition-colors tracking-widest text-xs bg-transparent"
+                  }
+                  disabled={buttonText !== "CONTACT US"}
+                >
+                  {buttonText}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     </section>

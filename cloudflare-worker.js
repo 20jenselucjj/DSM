@@ -198,7 +198,7 @@ export default {
                 </a>
               </p>
               <p style="margin: 10px 0 0 0; color: #999999; font-size: 12px;">
-                © ${new Date().getFullYear()} Desert Sports Med. All rights reserved.
+                © 2026 DESERT SPORTS MED. ALL RIGHTS RESERVED.
               </p>
             </td>
           </tr>
