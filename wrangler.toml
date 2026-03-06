@@ -3,5 +3,7 @@ main = "cloudflare-worker.js"
 compatibility_date = "2026-01-13"
 
 [vars]
+# Provide a comma-separated list of allowed origins for CORS (optional)
+# e.g. ALLOWED_ORIGIN = "https://desertsportsmed.com"
 # Add environment variables here when deploying via CLI
 # Or use secrets for sensitive data like API keys

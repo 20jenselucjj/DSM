@@ -23,10 +23,10 @@ const ServiceCard = ({ image, title, subtitle }: ServiceCardProps) => {
       
       {/* Title and subtitle text */}
       <div className="mt-6 text-center max-w-[250px]">
-        <h3 className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase text-[#a35f44] leading-tight" data-editor-id="h3-text-sm-sm-text-base-0" style={{ position: "relative" }}>
+        <h3 className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase text-[#a35f44] leading-tight">
           {title}
         </h3>
-        <p className="text-sm sm:text-base tracking-[0.2em] uppercase text-[#a35f44] mt-1 leading-tight" data-editor-id="p-text-sm-sm-text-base-1" style={{ position: "relative", fontWeight: 700 }}>
+        <p className="text-sm sm:text-base tracking-[0.2em] uppercase text-[#a35f44] mt-1 leading-tight" style={{ fontWeight: 700 }}>
           {subtitle}
         </p>
       </div>

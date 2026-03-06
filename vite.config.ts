@@ -50,10 +50,6 @@ export default defineConfig(() => ({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Split heavy editor dependencies into separate chunks
-          if (id.includes('grapesjs') || id.includes('@craftjs') || id.includes('react-moveable')) {
-            return 'editor-libs';
-          }
           // Split React Query
           if (id.includes('@tanstack/react-query')) {
             return 'react-query';

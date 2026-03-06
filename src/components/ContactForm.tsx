@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { FORM_WORKER_URL as workerUrl } from "@/config";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -26,6 +27,27 @@ type FormValues = z.infer<typeof formSchema>;
 
 const ContactForm = () => {
   const [buttonText, setButtonText] = useState("CONTACT US");
+
+  // warn if the worker URL is not secure
+  useEffect(() => {
+    if (workerUrl && workerUrl.startsWith('http://')) {
+      console.warn('FORM_WORKER_URL is using http, which is insecure:', workerUrl);
+    }
+  }, [workerUrl]);
+
+  // if the worker URL is missing the config module would have thrown already,
+  // but we provide a safety guard here for runtime builds (e.g. when someone
+  // edits .env without rebuilding).
+  if (!workerUrl) {
+    console.error('No form worker URL configured; contact form disabled');
+  }
+
+  // notify the user in UI if the form cannot submit
+  useEffect(() => {
+    if (!workerUrl) {
+      toast.error('Contact form is disabled (missing configuration)');
+    }
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -41,7 +63,11 @@ const ContactForm = () => {
     setButtonText("SENDING...");
 
     try {
-      const response = await fetch(import.meta.env.VITE_FORM_WORKER_URL, {
+      if (!workerUrl) {
+        // abort early if config somehow missing at runtime
+        throw new Error('Form submission not available');
+      }
+      const response = await fetch(workerUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

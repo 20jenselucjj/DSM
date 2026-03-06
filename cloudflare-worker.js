@@ -1,10 +1,91 @@
 export default {
   async fetch(request, env) {
+    // --- configuration validation ------------------------------------------------
+    // ensure required env vars are present; if not, fail fast so misconfigured
+    // deployments are obvious.
+    const required = ['RESEND_API_KEY', 'CONTACT_EMAIL'];
+    for (const key of required) {
+      if (!env[key]) {
+        return new Response(
+          JSON.stringify({ error: `Missing environment variable: ${key}` }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // helper to escape html special characters (prevent injection in emails)
+    const escapeHtml = (str = "") =>
+      str.replace(/[&<>\"']/g, (s) =>
+        ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+        }[s])
+      );
+
+    // simple in-memory rate limiter (stateless between instances; replace with
+    // Durable Object or KV for production). keys are IP addresses.
+    const rateLimitMap = globalThis.__RATE_LIMIT_MAP || new Map();
+    globalThis.__RATE_LIMIT_MAP = rateLimitMap;
+    const maxPerHour = parseInt(env.RATE_LIMIT_PER_HOUR || '100', 10);
+    const ip =
+      request.headers.get('CF-Connecting-IP') ||
+      request.headers.get('X-Forwarded-For') ||
+      'unknown';
+    const now = Date.now();
+    const windowStart = now - 1000 * 60 * 60;
+    let record = rateLimitMap.get(ip) || { count: 0, ts: now };
+    if (record.ts < windowStart) {
+      record = { count: 0, ts: now };
+    }
+    record.count += 1;
+    rateLimitMap.set(ip, record);
+    if (record.count > maxPerHour) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests' }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+
+    // CORS/origin handling - only allow requests from whitelisted origins; a
+    // missing origin should ALWAYS be rejected when a whitelist is configured.
+    const origin = request.headers.get('Origin') || '';
+    const allowedOrigins = env.ALLOWED_ORIGIN ? env.ALLOWED_ORIGIN.split(',') : [];
+    if (!origin || (allowedOrigins.length && !allowedOrigins.includes(origin))) {
+      return new Response(
+        JSON.stringify({ error: 'Origin not allowed' }),
+        {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+    const corsOrigin = origin || '*';
+
+    // Enforce maximum payload size using Content-Length header when available
+    const maxSize = 10_000; // bytes
+    const contentLength = request.headers.get('Content-Length');
+    if (contentLength && parseInt(contentLength, 10) > maxSize) {
+      return new Response(
+        JSON.stringify({ error: 'Payload too large' }),
+        { status: 413, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': corsOrigin,
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         },
@@ -19,16 +100,30 @@ export default {
           status: 405,
           headers: { 
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': corsOrigin
           }
         }
       );
     }
 
     try {
-      // Parse the form data
-      const data = await request.json();
+      // Parse the form data, catching JSON errors
+      let data;
+      try {
+        data = await request.json();
+      } catch (err) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid JSON payload' }),
+          { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': corsOrigin } }
+        );
+      }
       const { firstName, lastName, email, message, formType } = data;
+
+      // sanitize user input for safe insertion into HTML
+      const safeFirstName = escapeHtml(firstName);
+      const safeLastName = escapeHtml(lastName);
+      const safeEmail = escapeHtml(email);
+      const safeMessage = escapeHtml(message);
 
       // Validate required fields
       if (!firstName || !lastName || !email || !message) {
@@ -38,7 +133,7 @@ export default {
             status: 400,
             headers: { 
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': corsOrigin
             }
           }
         );
@@ -53,7 +148,7 @@ export default {
             status: 400,
             headers: { 
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': corsOrigin
             }
           }
         );
@@ -62,8 +157,8 @@ export default {
       // Determine subject and content based on form type
       const isQuote = formType === 'quote';
       const subject = isQuote 
-        ? `Quote Request from ${firstName} ${lastName}`
-        : `New Contact Inquiry from ${firstName} ${lastName}`;
+        ? `Quote Request from ${safeFirstName} ${safeLastName}`
+        : `New Contact Inquiry from ${safeFirstName} ${safeLastName}`;
 
       const formTypeLabel = isQuote ? 'Quote Request' : 'Contact Form Inquiry';
       const formTypeColor = isQuote ? '#8C3820' : '#414759';
@@ -77,7 +172,7 @@ export default {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${formTypeLabel}</title>
   <!--[if !mso]><!--><div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
-    ${isQuote ? `New quote request from ${firstName} ${lastName} - Reply to ${email}` : `New contact inquiry from ${firstName} ${lastName} - Reply to ${email}`}
+    ${isQuote ? `New quote request from ${safeFirstName} ${safeLastName} - Reply to ${safeEmail}` : `New contact inquiry from ${safeFirstName} ${safeLastName} - Reply to ${safeEmail}`}
   </div><!--<![endif]-->
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
@@ -119,7 +214,7 @@ export default {
                           <strong style="color: #555555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Full Name</strong>
                         </td>
                         <td style="vertical-align: top;">
-                          <span style="color: #222222; font-size: 15px; font-weight: 500;">${firstName} ${lastName}</span>
+                          <span style="color: #222222; font-size: 15px; font-weight: 500;">${safeFirstName} ${safeLastName}</span>
                         </td>
                       </tr>
                     </table>
@@ -133,7 +228,7 @@ export default {
                           <strong style="color: #555555; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Email</strong>
                         </td>
                         <td style="vertical-align: top;">
-                          <span style="color: #222222; font-size: 15px; font-weight: 500;">${email}</span>
+                          <span style="color: #222222; font-size: 15px; font-weight: 500;">${safeEmail}</span>
                         </td>
                       </tr>
                     </table>
@@ -170,15 +265,15 @@ export default {
                   Message
                 </h3>
                 <div style="background-color: #f8f9fa; border-left: 4px solid ${formTypeColor}; padding: 20px; border-radius: 4px; line-height: 1.6;">
-                  <p style="margin: 0; color: #333333; font-size: 15px; white-space: pre-wrap;">${message}</p>
+                  <p style="margin: 0; color: #333333; font-size: 15px; white-space: pre-wrap;">${safeMessage}</p>
                 </div>
               </div>
 
               <!-- Action Button -->
               <div style="text-align: center; margin: 30px 0;">
-                <a href="mailto:${email}?subject=Re: ${isQuote ? 'Quote Request' : 'Contact Inquiry'}" 
+                <a href="mailto:${safeEmail}?subject=Re: ${isQuote ? 'Quote Request' : 'Contact Inquiry'}" 
                    style="display: inline-block; background-color: ${formTypeColor}; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                  Reply to ${firstName}
+                  Reply to ${safeFirstName}
                 </a>
               </div>
 
@@ -232,7 +327,7 @@ export default {
         throw new Error('Failed to send email');
       }
 
-      return new Response(
+      const resultResponse = new Response(
         JSON.stringify({ 
           success: true, 
           message: 'Email sent successfully' 
@@ -241,14 +336,18 @@ export default {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': corsOrigin,
+            'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none';",
+            'X-Frame-Options': 'DENY',
+            'X-Content-Type-Options': 'nosniff',
           },
         }
       );
+      return resultResponse;
 
     } catch (error) {
       console.error('Worker error:', error);
-      return new Response(
+      const errResp = new Response(
         JSON.stringify({ 
           error: 'Failed to process request',
           details: error.message 
@@ -257,10 +356,14 @@ export default {
           status: 500,
           headers: { 
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': corsOrigin,
+            'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none';",
+            'X-Frame-Options': 'DENY',
+            'X-Content-Type-Options': 'nosniff',
           },
         }
       );
+      return errResp;
     }
   },
 };

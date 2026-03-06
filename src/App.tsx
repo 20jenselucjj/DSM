@@ -35,6 +35,9 @@ const App = () => {
     </div>
   );
 
+  // editing functionality has been removed from the production build
+  const enableEditing = false;
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -47,6 +50,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
+
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
